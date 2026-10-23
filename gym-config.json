@@ -1,0 +1,52 @@
+{
+  "version": "3.2.0",
+  "tasks_per_round": 7,
+  "modules": [
+    {
+      "name": "network",
+      "enabled": true,
+      "count": 3,
+      "every": 1
+    },
+    {
+      "name": "permissions",
+      "enabled": true,
+      "count": 1,
+      "every": 1
+    },
+    {
+      "name": "files",
+      "enabled": true,
+      "count": 1,
+      "every": 1
+    },
+    {
+      "name": "shell",
+      "enabled": true,
+      "count": 1,
+      "every": 1
+    },
+    {
+      "name": "observe",
+      "enabled": true,
+      "count": 1,
+      "every": 1
+    },
+    {
+      "name": "tls",
+      "enabled": true,
+      "count": 1,
+      "every": 3
+    }
+  ],
+  "adaptive": {
+    "enabled": true,
+    "base_weight": 1.0,
+    "failure_bonus": 1.7,
+    "topic_failure_bonus": 0.6,
+    "recent_success_discount": 0.55,
+    "uncompleted_bonus": 0.6,
+    "unseen_bonus": 0.7,
+    "min_weight": 0.2
+  }
+}

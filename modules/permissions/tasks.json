@@ -1,0 +1,350 @@
+[
+  {
+    "id": "permissions-01-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 640.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "640",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-01-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 640.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "640",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-02-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 600.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "600",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-02-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 600.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "600",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-03-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 644.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "644",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-03-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 644.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "644",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-04-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 750.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "750",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-04-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 750.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "750",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-05-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 700.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "700",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-05-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 700.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "700",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-06-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 755.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "755",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-06-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van {target} op 755.",
+    "hint": "Bekijk man chmod en stat -c %a.",
+    "mode": "755",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-07-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van directory {target} op 2770 (inclusief speciale bits).",
+    "hint": "Lees over chmod setgid (2) en sticky bit (1).",
+    "mode": "2770",
+    "is_dir": true,
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-07-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van directory {target} op 2770 (inclusief speciale bits).",
+    "hint": "Lees over chmod setgid (2) en sticky bit (1).",
+    "mode": "2770",
+    "is_dir": true,
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-08-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van directory {target} op 2775 (inclusief speciale bits).",
+    "hint": "Lees over chmod setgid (2) en sticky bit (1).",
+    "mode": "2775",
+    "is_dir": true,
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-08-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van directory {target} op 2775 (inclusief speciale bits).",
+    "hint": "Lees over chmod setgid (2) en sticky bit (1).",
+    "mode": "2775",
+    "is_dir": true,
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-09-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van directory {target} op 1777 (inclusief speciale bits).",
+    "hint": "Lees over chmod setgid (2) en sticky bit (1).",
+    "mode": "1777",
+    "is_dir": true,
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-09-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van directory {target} op 1777 (inclusief speciale bits).",
+    "hint": "Lees over chmod setgid (2) en sticky bit (1).",
+    "mode": "1777",
+    "is_dir": true,
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-10-A",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van directory {target} op 1770 (inclusief speciale bits).",
+    "hint": "Lees over chmod setgid (2) en sticky bit (1).",
+    "mode": "1770",
+    "is_dir": true,
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-10-B",
+    "group": "permissions",
+    "kind": "mode",
+    "description": "Zet de permissies van directory {target} op 1770 (inclusief speciale bits).",
+    "hint": "Lees over chmod setgid (2) en sticky bit (1).",
+    "mode": "1770",
+    "is_dir": true,
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-11-A",
+    "group": "permissions",
+    "kind": "umask",
+    "description": "Gebruik in een subshell umask 027 om een nieuw bestand en directory aan te maken; schrijf ze naar de opgegeven paden.",
+    "hint": "Een nieuw gewoon bestand begint met 666, een directory met 777. Gebruik bash -c of een subshell.",
+    "mask": "027",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-11-B",
+    "group": "permissions",
+    "kind": "umask",
+    "description": "Gebruik in een subshell umask 027 om een nieuw bestand en directory aan te maken; schrijf ze naar de opgegeven paden.",
+    "hint": "Een nieuw gewoon bestand begint met 666, een directory met 777. Gebruik bash -c of een subshell.",
+    "mask": "027",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-12-A",
+    "group": "permissions",
+    "kind": "umask",
+    "description": "Gebruik in een subshell umask 077 om een nieuw bestand en directory aan te maken; schrijf ze naar de opgegeven paden.",
+    "hint": "Een nieuw gewoon bestand begint met 666, een directory met 777. Gebruik bash -c of een subshell.",
+    "mask": "077",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-12-B",
+    "group": "permissions",
+    "kind": "umask",
+    "description": "Gebruik in een subshell umask 077 om een nieuw bestand en directory aan te maken; schrijf ze naar de opgegeven paden.",
+    "hint": "Een nieuw gewoon bestand begint met 666, een directory met 777. Gebruik bash -c of een subshell.",
+    "mask": "077",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-13-A",
+    "group": "permissions",
+    "kind": "umask",
+    "description": "Gebruik in een subshell umask 022 om een nieuw bestand en directory aan te maken; schrijf ze naar de opgegeven paden.",
+    "hint": "Een nieuw gewoon bestand begint met 666, een directory met 777. Gebruik bash -c of een subshell.",
+    "mask": "022",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-13-B",
+    "group": "permissions",
+    "kind": "umask",
+    "description": "Gebruik in een subshell umask 022 om een nieuw bestand en directory aan te maken; schrijf ze naar de opgegeven paden.",
+    "hint": "Een nieuw gewoon bestand begint met 666, een directory met 777. Gebruik bash -c of een subshell.",
+    "mask": "022",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-14-A",
+    "group": "permissions",
+    "kind": "umask",
+    "description": "Gebruik in een subshell umask 002 om een nieuw bestand en directory aan te maken; schrijf ze naar de opgegeven paden.",
+    "hint": "Een nieuw gewoon bestand begint met 666, een directory met 777. Gebruik bash -c of een subshell.",
+    "mask": "002",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-14-B",
+    "group": "permissions",
+    "kind": "umask",
+    "description": "Gebruik in een subshell umask 002 om een nieuw bestand en directory aan te maken; schrijf ze naar de opgegeven paden.",
+    "hint": "Een nieuw gewoon bestand begint met 666, een directory met 777. Gebruik bash -c of een subshell.",
+    "mask": "002",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-15-A",
+    "group": "permissions",
+    "kind": "symbolic",
+    "description": "Zet {target} met symbolische chmod-notatie op permissies 600.",
+    "hint": "Gebruik chmod u=...,g=...,o=... en stat om te controleren.",
+    "mode": "600",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-15-B",
+    "group": "permissions",
+    "kind": "symbolic",
+    "description": "Zet {target} met symbolische chmod-notatie op permissies 600.",
+    "hint": "Gebruik chmod u=...,g=...,o=... en stat om te controleren.",
+    "mode": "600",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-16-A",
+    "group": "permissions",
+    "kind": "symbolic",
+    "description": "Zet {target} met symbolische chmod-notatie op permissies 640.",
+    "hint": "Gebruik chmod u=...,g=...,o=... en stat om te controleren.",
+    "mode": "640",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-16-B",
+    "group": "permissions",
+    "kind": "symbolic",
+    "description": "Zet {target} met symbolische chmod-notatie op permissies 640.",
+    "hint": "Gebruik chmod u=...,g=...,o=... en stat om te controleren.",
+    "mode": "640",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "permissions-17-A",
+    "group": "permissions",
+    "kind": "symbolic",
+    "description": "Zet {target} met symbolische chmod-notatie op permissies 755.",
+    "hint": "Gebruik chmod u=...,g=...,o=... en stat om te controleren.",
+    "mode": "755",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "permissions-17-B",
+    "group": "permissions",
+    "kind": "symbolic",
+    "description": "Zet {target} met symbolische chmod-notatie op permissies 755.",
+    "hint": "Gebruik chmod u=...,g=...,o=... en stat om te controleren.",
+    "mode": "755",
+    "tier": "daily",
+    "variant": "B"
+  }
+]

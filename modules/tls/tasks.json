@@ -1,0 +1,34 @@
+[
+  {
+    "id": "tls32-tls_subject",
+    "group": "tls",
+    "kind": "tls_subject",
+    "description": "Onderzoek een X.509-certificaat",
+    "hint": "openssl x509 -in CERT -noout -subject",
+    "tier": "daily"
+  },
+  {
+    "id": "tls32-tls_issuer",
+    "group": "tls",
+    "kind": "tls_issuer",
+    "description": "Onderzoek een X.509-certificaat",
+    "hint": "openssl x509 -in CERT -noout -issuer",
+    "tier": "daily"
+  },
+  {
+    "id": "tls32-tls_expiry",
+    "group": "tls",
+    "kind": "tls_expiry",
+    "description": "Onderzoek een X.509-certificaat",
+    "hint": "openssl x509 -in CERT -noout -enddate",
+    "tier": "daily"
+  },
+  {
+    "id": "tls32-tls_verify",
+    "group": "tls",
+    "kind": "tls_verify",
+    "description": "Onderzoek een X.509-certificaat",
+    "hint": "openssl x509 -in CERT -noout -text",
+    "tier": "daily"
+  }
+]

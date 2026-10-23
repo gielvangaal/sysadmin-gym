@@ -1,0 +1,227 @@
+[
+  {
+    "id": "shell-01-A",
+    "group": "shell",
+    "kind": "grep",
+    "description": "{instruction}",
+    "hint": "grep PATROON bestand",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-01-B",
+    "group": "shell",
+    "kind": "grep",
+    "description": "{instruction}",
+    "hint": "grep PATROON bestand",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "shell-02-A",
+    "group": "shell",
+    "kind": "grep_ci",
+    "description": "{instruction}",
+    "hint": "grep -i PATROON bestand",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-02-B",
+    "group": "shell",
+    "kind": "grep_ci",
+    "description": "{instruction}",
+    "hint": "grep -i PATROON bestand",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "shell-03-A",
+    "group": "shell",
+    "kind": "sort",
+    "description": "{instruction}",
+    "hint": "sort (eventueel -n)",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-03-B",
+    "group": "shell",
+    "kind": "sort",
+    "description": "{instruction}",
+    "hint": "sort (eventueel -n)",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "shell-04-A",
+    "group": "shell",
+    "kind": "unique",
+    "description": "{instruction}",
+    "hint": "sort | uniq -c",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-04-B",
+    "group": "shell",
+    "kind": "unique",
+    "description": "{instruction}",
+    "hint": "sort | uniq -c",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "shell-05-A",
+    "group": "shell",
+    "kind": "count_error",
+    "description": "{instruction}",
+    "hint": "grep -c ERROR",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-05-B",
+    "group": "shell",
+    "kind": "count_error",
+    "description": "{instruction}",
+    "hint": "grep -c ERROR",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "shell-06-A",
+    "group": "shell",
+    "kind": "head",
+    "description": "{instruction}",
+    "hint": "head -n 5",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-06-B",
+    "group": "shell",
+    "kind": "head",
+    "description": "{instruction}",
+    "hint": "head -n 5",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "shell-07-A",
+    "group": "shell",
+    "kind": "redirect",
+    "description": "{instruction}",
+    "hint": "> overschrijft een bestand",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-07-B",
+    "group": "shell",
+    "kind": "redirect",
+    "description": "{instruction}",
+    "hint": "> overschrijft een bestand",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "shell-08-A",
+    "group": "shell",
+    "kind": "append",
+    "description": "{instruction}",
+    "hint": ">> voegt toe",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-08-B",
+    "group": "shell",
+    "kind": "append",
+    "description": "{instruction}",
+    "hint": ">> voegt toe",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "shell-09-A",
+    "group": "shell",
+    "kind": "pipeline",
+    "description": "{instruction}",
+    "hint": "awk, sort, uniq -c, sort -nr, head",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-09-B",
+    "group": "shell",
+    "kind": "pipeline",
+    "description": "{instruction}",
+    "hint": "awk, sort, uniq -c, sort -nr, head",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "shell-10-A",
+    "group": "shell",
+    "kind": "cut",
+    "description": "{instruction}",
+    "hint": "cut -d: -f1",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "shell-10-B",
+    "group": "shell",
+    "kind": "cut",
+    "description": "{instruction}",
+    "hint": "cut -d: -f1",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "bonus-06",
+    "group": "shell",
+    "kind": "regex",
+    "description": "Een applicatielog bevat verschillende niveaus. Bewaar uitsluitend regels die beginnen met ERROR of WARNING in {result}.",
+    "hint": "grep -E met ^ en |",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-07",
+    "group": "shell",
+    "kind": "tail",
+    "description": "Bewaar de drie nieuwste regels uit {log} in {result}.",
+    "hint": "Bekijk tail -n",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-08",
+    "group": "shell",
+    "kind": "fields",
+    "description": "De medewerkerslijst gebruikt dubbele punten als scheidingsteken. Bewaar alleen de tweede kolom in {result}.",
+    "hint": "cut -d: -f2",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-09",
+    "group": "shell",
+    "kind": "sort_numeric",
+    "description": "Sorteer de getallen uit {numbers} numeriek oplopend in {result}.",
+    "hint": "sort -n",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-10",
+    "group": "shell",
+    "kind": "count_files",
+    "description": "Hoeveel gewone bestanden staan er direct in {tree}? Bewaar alleen het aantal in {result}.",
+    "hint": "find -maxdepth 1 -type f, wc -l",
+    "tier": "daily",
+    "variant": "A"
+  }
+]

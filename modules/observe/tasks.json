@@ -1,0 +1,254 @@
+[
+  {
+    "id": "observe-01-A",
+    "group": "observe",
+    "kind": "memory",
+    "description": "{instruction}",
+    "hint": "free -h",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-01-B",
+    "group": "observe",
+    "kind": "memory",
+    "description": "{instruction}",
+    "hint": "free -h",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-02-A",
+    "group": "observe",
+    "kind": "cpu",
+    "description": "{instruction}",
+    "hint": "ps -eo pid,comm,%cpu --sort=-%cpu",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-02-B",
+    "group": "observe",
+    "kind": "cpu",
+    "description": "{instruction}",
+    "hint": "ps -eo pid,comm,%cpu --sort=-%cpu",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-03-A",
+    "group": "observe",
+    "kind": "uptime",
+    "description": "{instruction}",
+    "hint": "uptime",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-03-B",
+    "group": "observe",
+    "kind": "uptime",
+    "description": "{instruction}",
+    "hint": "uptime",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-04-A",
+    "group": "observe",
+    "kind": "processes",
+    "description": "{instruction}",
+    "hint": "ps -ef of ps aux",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-04-B",
+    "group": "observe",
+    "kind": "processes",
+    "description": "{instruction}",
+    "hint": "ps -ef of ps aux",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-05-A",
+    "group": "observe",
+    "kind": "signal",
+    "description": "{instruction}",
+    "hint": "kill -TERM PID",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-05-B",
+    "group": "observe",
+    "kind": "signal",
+    "description": "{instruction}",
+    "hint": "kill -TERM PID",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-06-A",
+    "group": "observe",
+    "kind": "service",
+    "description": "{instruction}",
+    "hint": "systemctl status",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-06-B",
+    "group": "observe",
+    "kind": "service",
+    "description": "{instruction}",
+    "hint": "systemctl status",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-07-A",
+    "group": "observe",
+    "kind": "journal",
+    "description": "{instruction}",
+    "hint": "journalctl -n",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-07-B",
+    "group": "observe",
+    "kind": "journal",
+    "description": "{instruction}",
+    "hint": "journalctl -n",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-08-A",
+    "group": "observe",
+    "kind": "disk",
+    "description": "{instruction}",
+    "hint": "df -h",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-08-B",
+    "group": "observe",
+    "kind": "disk",
+    "description": "{instruction}",
+    "hint": "df -h",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-09-A",
+    "group": "observe",
+    "kind": "mounts",
+    "description": "{instruction}",
+    "hint": "findmnt",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-09-B",
+    "group": "observe",
+    "kind": "mounts",
+    "description": "{instruction}",
+    "hint": "findmnt",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-10-A",
+    "group": "observe",
+    "kind": "block",
+    "description": "{instruction}",
+    "hint": "lsblk -f",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-10-B",
+    "group": "observe",
+    "kind": "block",
+    "description": "{instruction}",
+    "hint": "lsblk -f",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "observe-11-A",
+    "group": "observe",
+    "kind": "largest",
+    "description": "{instruction}",
+    "hint": "du -sh",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "observe-11-B",
+    "group": "observe",
+    "kind": "largest",
+    "description": "{instruction}",
+    "hint": "du -sh",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "bonus-13",
+    "group": "observe",
+    "kind": "kernel",
+    "description": "Noteer de draaiende kernelrelease in {result}.",
+    "hint": "uname -r",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-14",
+    "group": "observe",
+    "kind": "whoami",
+    "description": "Noteer de naam van de huidige gebruiker in {result}.",
+    "hint": "id -un",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-15",
+    "group": "observe",
+    "kind": "hostname",
+    "description": "Noteer de actuele systeemhostname in {result}.",
+    "hint": "hostname",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-16",
+    "group": "observe",
+    "kind": "uid",
+    "description": "Noteer je numerieke user-id in {result}.",
+    "hint": "id -u",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-17",
+    "group": "observe",
+    "kind": "service_enabled",
+    "description": "Stel vast of de SSH-service ingeschakeld is voor automatisch starten. Bewaar enabled of disabled in {result}.",
+    "hint": "systemctl is-enabled sshd",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-18",
+    "group": "observe",
+    "kind": "root_fs",
+    "description": "Leg het type bestandssysteem van / vast in {result}.",
+    "hint": "findmnt -n -o FSTYPE /",
+    "tier": "daily",
+    "variant": "A"
+  }
+]

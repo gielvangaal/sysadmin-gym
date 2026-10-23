@@ -1,0 +1,227 @@
+[
+  {
+    "id": "files-01-A",
+    "group": "files",
+    "kind": "copy",
+    "description": "{instruction}",
+    "hint": "cp bron doel",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-01-B",
+    "group": "files",
+    "kind": "copy",
+    "description": "{instruction}",
+    "hint": "cp bron doel",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "files-02-A",
+    "group": "files",
+    "kind": "move",
+    "description": "{instruction}",
+    "hint": "mv bron doel",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-02-B",
+    "group": "files",
+    "kind": "move",
+    "description": "{instruction}",
+    "hint": "mv bron doel",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "files-03-A",
+    "group": "files",
+    "kind": "hardlink",
+    "description": "{instruction}",
+    "hint": "ln (zonder -s)",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-03-B",
+    "group": "files",
+    "kind": "hardlink",
+    "description": "{instruction}",
+    "hint": "ln (zonder -s)",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "files-04-A",
+    "group": "files",
+    "kind": "symlink",
+    "description": "{instruction}",
+    "hint": "ln -s bron link",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-04-B",
+    "group": "files",
+    "kind": "symlink",
+    "description": "{instruction}",
+    "hint": "ln -s bron link",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "files-05-A",
+    "group": "files",
+    "kind": "find_name",
+    "description": "{instruction}",
+    "hint": "find -name",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-05-B",
+    "group": "files",
+    "kind": "find_name",
+    "description": "{instruction}",
+    "hint": "find -name",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "files-06-A",
+    "group": "files",
+    "kind": "find_size",
+    "description": "{instruction}",
+    "hint": "find -size en -type f",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-06-B",
+    "group": "files",
+    "kind": "find_size",
+    "description": "{instruction}",
+    "hint": "find -size en -type f",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "files-07-A",
+    "group": "files",
+    "kind": "archive",
+    "description": "{instruction}",
+    "hint": "tar -czf",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-07-B",
+    "group": "files",
+    "kind": "archive",
+    "description": "{instruction}",
+    "hint": "tar -czf",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "files-08-A",
+    "group": "files",
+    "kind": "extract",
+    "description": "{instruction}",
+    "hint": "tar -xzf",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-08-B",
+    "group": "files",
+    "kind": "extract",
+    "description": "{instruction}",
+    "hint": "tar -xzf",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "files-09-A",
+    "group": "files",
+    "kind": "compare",
+    "description": "{instruction}",
+    "hint": "diff of cmp",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-09-B",
+    "group": "files",
+    "kind": "compare",
+    "description": "{instruction}",
+    "hint": "diff of cmp",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "files-10-A",
+    "group": "files",
+    "kind": "count_lines",
+    "description": "{instruction}",
+    "hint": "wc -l",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "files-10-B",
+    "group": "files",
+    "kind": "count_lines",
+    "description": "{instruction}",
+    "hint": "wc -l",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "bonus-01",
+    "group": "files",
+    "kind": "make_dir",
+    "description": "Er is een nieuwe werkmap nodig op {target}. Maak die aan.",
+    "hint": "Een directory aanmaken: man mkdir",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-02",
+    "group": "files",
+    "kind": "remove_file",
+    "description": "Het verouderde bestand {target} mag niet meer bestaan.",
+    "hint": "Bestanden verwijderen: man rm",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-03",
+    "group": "files",
+    "kind": "empty_file",
+    "description": "Maak het bestaande bestand {target} leeg zonder het te verwijderen.",
+    "hint": "Redirection met > of truncate",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-04",
+    "group": "files",
+    "kind": "nested_dir",
+    "description": "Maak een geneste directorystructuur onder {target}/a/b/c.",
+    "hint": "Bekijk mkdir -p",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-05",
+    "group": "files",
+    "kind": "content_search",
+    "description": "Vind alle bestanden onder {tree} met de tekst report en bewaar de paden in {result}.",
+    "hint": "grep -lR of find met grep",
+    "tier": "daily",
+    "variant": "A"
+  }
+]

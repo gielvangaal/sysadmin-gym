@@ -1,0 +1,34 @@
+[
+  {
+    "id": "system-01-A",
+    "group": "system",
+    "kind": "firewall_port",
+    "description": "{instruction}",
+    "hint": "Bekijk firewall-cmd --help / nmcli connection add en connection modify.",
+    "tier": "lab"
+  },
+  {
+    "id": "system-02-A",
+    "group": "system",
+    "kind": "nmcli_profile",
+    "description": "{instruction}",
+    "hint": "Bekijk firewall-cmd --help / nmcli connection add en connection modify.",
+    "tier": "lab"
+  },
+  {
+    "id": "rhcsa-01",
+    "group": "system",
+    "kind": "selinux_context",
+    "description": "{instruction}",
+    "hint": "Controleer getenforce, ls -Z, semanage fcontext en restorecon.",
+    "tier": "lab"
+  },
+  {
+    "id": "rhcsa-02",
+    "group": "system",
+    "kind": "fstab_tmpfs",
+    "description": "{instruction}",
+    "hint": "Bekijk man fstab, mount -t tmpfs en findmnt; maak een backup van fstab.",
+    "tier": "lab"
+  }
+]

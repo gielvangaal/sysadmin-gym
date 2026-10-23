@@ -1,0 +1,230 @@
+[
+  {
+    "id": "network-01-A",
+    "group": "network",
+    "kind": "health_body",
+    "description": "{instruction}",
+    "hint": "curl -o bestand URL",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "network-01-B",
+    "group": "network",
+    "kind": "health_body",
+    "description": "{instruction}",
+    "hint": "curl -o bestand URL",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "network-02-A",
+    "group": "network",
+    "kind": "http_code",
+    "description": "{instruction}",
+    "hint": "curl -s -o /dev/null -w \"%{http_code}\\n\" URL",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "network-02-B",
+    "group": "network",
+    "kind": "http_code",
+    "description": "{instruction}",
+    "hint": "curl -s -o /dev/null -w \"%{http_code}\\n\" URL",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "network-03-A",
+    "group": "network",
+    "kind": "headers",
+    "description": "{instruction}",
+    "hint": "curl -I URL",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "network-03-B",
+    "group": "network",
+    "kind": "headers",
+    "description": "{instruction}",
+    "hint": "curl -I URL",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "network-04-A",
+    "group": "network",
+    "kind": "tcp",
+    "description": "{instruction}",
+    "hint": "nc -zv host poort",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "network-04-B",
+    "group": "network",
+    "kind": "tcp",
+    "description": "{instruction}",
+    "hint": "nc -zv host poort",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "network-05-A",
+    "group": "network",
+    "kind": "status",
+    "description": "{instruction}",
+    "hint": "curl -w %{http_code}",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "network-05-B",
+    "group": "network",
+    "kind": "status",
+    "description": "{instruction}",
+    "hint": "curl -w %{http_code}",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "network-06-A",
+    "group": "network",
+    "kind": "resolve",
+    "description": "{instruction}",
+    "hint": "getent hosts localhost",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "network-06-B",
+    "group": "network",
+    "kind": "resolve",
+    "description": "{instruction}",
+    "hint": "getent hosts localhost",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "network-07-A",
+    "group": "network",
+    "kind": "routes",
+    "description": "{instruction}",
+    "hint": "ip route",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "network-07-B",
+    "group": "network",
+    "kind": "routes",
+    "description": "{instruction}",
+    "hint": "ip route",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "network-08-A",
+    "group": "network",
+    "kind": "address",
+    "description": "{instruction}",
+    "hint": "ip -br a",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "network-08-B",
+    "group": "network",
+    "kind": "address",
+    "description": "{instruction}",
+    "hint": "ip -br a",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "network-09-A",
+    "group": "network",
+    "kind": "listen",
+    "description": "{instruction}",
+    "hint": "ss -lnt",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "network-09-B",
+    "group": "network",
+    "kind": "listen",
+    "description": "{instruction}",
+    "hint": "ss -lnt",
+    "tier": "daily",
+    "variant": "B"
+  },
+  {
+    "id": "bonus-11",
+    "group": "network",
+    "kind": "http_missing",
+    "description": "Een client vraagt een niet-bestaande URL op. Leg alleen de HTTP-status vast in {result}.",
+    "hint": "curl -o /dev/null -w",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "bonus-12",
+    "group": "network",
+    "kind": "fetch_headers",
+    "description": "De beheerder wil alleen weten welk Content-Type de lokale webserver verstuurt. Bewaar de waarde in {result}.",
+    "hint": "curl -I en headerfilter",
+    "tier": "daily",
+    "variant": "A"
+  },
+  {
+    "id": "net32-cidr_network",
+    "group": "network",
+    "kind": "cidr_network",
+    "description": "IPv4 subnetanalyse",
+    "hint": "ipcalc -n ADDRESS/PREFIX; zoek netwerkadres en prefix op.",
+    "tier": "daily"
+  },
+  {
+    "id": "net32-cidr_hosts",
+    "group": "network",
+    "kind": "cidr_hosts",
+    "description": "IPv4 subnetanalyse",
+    "hint": "Bereken 2^(32-prefix) - 2 voor klassieke subnetten.",
+    "tier": "daily"
+  },
+  {
+    "id": "net32-same_subnet",
+    "group": "network",
+    "kind": "same_subnet",
+    "description": "IPv4 subnetanalyse",
+    "hint": "Bereken het netwerkadres van beide IPs met hetzelfde prefix.",
+    "tier": "daily"
+  },
+  {
+    "id": "net32-cidr_broadcast",
+    "group": "network",
+    "kind": "cidr_broadcast",
+    "description": "IPv4 subnetanalyse",
+    "hint": "ipcalc -b ADDRESS/PREFIX",
+    "tier": "daily"
+  },
+  {
+    "id": "net32-cidr_mask",
+    "group": "network",
+    "kind": "cidr_mask",
+    "description": "IPv4 subnetanalyse",
+    "hint": "ipcalc -m ADDRESS/PREFIX",
+    "tier": "daily"
+  },
+  {
+    "id": "net32-gateway_subnet",
+    "group": "network",
+    "kind": "gateway_subnet",
+    "description": "IPv4 subnetanalyse",
+    "hint": "Vergelijk het subnet van host en gateway.",
+    "tier": "daily"
+  }
+]

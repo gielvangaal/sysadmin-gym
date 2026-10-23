@@ -1,0 +1,7 @@
+workspace/
+session.json
+last_check.json
+history/
+module-backups/
+__pycache__/
+*.pyc
