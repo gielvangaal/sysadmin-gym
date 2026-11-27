@@ -1,6 +1,9 @@
 """Offline configuration recovery with real Linux tools and isolated paths."""
 import configparser
 import ipaddress
+import re
+import shlex
+import subprocess
 from pathlib import Path
 
 # These fixtures represent configuration captured from a lab machine.
@@ -9,6 +12,12 @@ RECOVERY_FILES = {
         'journald.conf', '[Journal]\nStorage=volatile\nMaxRetentionSec=0\n',
         'Configure persistent journal storage and cap retention at {number} days.',
         {'Journal': {'Storage': 'persistent', 'MaxRetentionSec': '{number}day'}},
+    ),
+    'journal_rotation': (
+        'journald.conf', '[Journal]\nStorage=persistent\nSystemMaxUse=4G\nSystemMaxFileSize=512M\n',
+        'Maintain persistent storage, limit journal disk usage to {number}M, '
+        'and rotate individual journal files at 8M.',
+        {'Journal': {'Storage': 'persistent', 'SystemMaxUse': '{number}M', 'SystemMaxFileSize': '8M'}},
     ),
     'timer': (
         'audit.timer', '[Timer]\nOnCalendar=weekly\nPersistent=false\n',
@@ -74,6 +83,24 @@ def prepare(t):
         path = root / filename
         path.write_text(initial)
         instruction = f'{goal.format(number=n)} Edit the offline fixture at {path}.'
+    elif op == 'ssh_policy':
+        host_key = root / 'ssh_host_ed25519_key'
+        subprocess.run(['ssh-keygen', '-q', '-t', 'ed25519', '-N', '', '-f', str(host_key)],
+                       check=True, capture_output=True, timeout=5)
+        path = root / 'sshd_config'
+        path.write_text(f'HostKey "{host_key}"\nPermitRootLogin yes\nPasswordAuthentication yes\n'
+                        'KbdInteractiveAuthentication yes\nPubkeyAuthentication no\n')
+        instruction = (f'Repair {path} so regular users can authenticate with public keys. '
+                       'Disable direct root login, password and keyboard-interactive authentication. '
+                       'Preserve the practice host key and validate the offline configuration.')
+    elif op == 'autofs_map':
+        (root / 'auto.master').write_text('/srv/old /etc/auto.obsolete\n')
+        (root / 'auto.projects').write_text('# Project shares\n')
+        t['timeout'] = 40 + n
+        instruction = (f'In the offline autofs fixtures in {root}, configure /srv/projects as '
+                       f'an indirect mount point using /etc/auto.projects and a {t["timeout"]} second '
+                       'idle timeout. Make the build subdirectory mount vault.invalid:/exports/build '
+                       'using read-only NFSv4.')
     elif op=='repo':
         repo=root/'repos'; repo.mkdir()
         (root/'mirror').mkdir()
@@ -128,6 +155,62 @@ def check(t):
     if op in RECOVERY_FILES:
         filename, _, _, requirements = RECOVERY_FILES[op]
         return check_recovery_file(root / filename, requirements, t['number'])
+    if op == 'ssh_policy':
+        path = root / 'sshd_config'
+        config = [
+            re.split(r'\s*=\s*|\s+', line.strip(), maxsplit=1)
+            for line in path.read_text().splitlines()
+            if line.strip() and not line.lstrip().startswith('#')
+        ]
+        # Limit this single-profile fixture to global SSH authentication settings.
+        allowed = {
+            'hostkey', 'permitrootlogin', 'passwordauthentication',
+            'kbdinteractiveauthentication', 'challengeresponseauthentication',
+            'pubkeyauthentication', 'authenticationmethods', 'usepam',
+        }
+        if any(len(line) != 2 or line[0].lower() not in allowed for line in config):
+            return False
+        keys = [shlex.split(value, comments=True) for option, value in config
+                if option.lower() == 'hostkey']
+        if keys != [[str(root / 'ssh_host_ed25519_key')]]:
+            return False
+        process = subprocess.run(['sshd', '-T', '-f', str(path)],
+                                 capture_output=True, text=True, timeout=5)
+        if process.returncode:
+            return False
+        settings = dict(line.split(None, 1) for line in process.stdout.splitlines() if ' ' in line)
+        return (
+            settings.get('permitrootlogin') == 'no'
+            and settings.get('passwordauthentication') == 'no'
+            and settings.get('kbdinteractiveauthentication') == 'no'
+            and settings.get('pubkeyauthentication') == 'yes'
+            and settings.get('hostbasedauthentication') == 'no'
+            and settings.get('gssapiauthentication', 'no') == 'no'
+            and settings.get('authenticationmethods') in ('any', 'publickey')
+        )
+    if op == 'autofs_map':
+        records = []
+        for filename in ('auto.master', 'auto.projects'):
+            lines = [
+                line.split('#', 1)[0].split()
+                for line in (root / filename).read_text().splitlines()
+                if line.strip() and not line.lstrip().startswith('#')
+            ]
+            entry, = lines
+            records.append(entry)
+        master, share = records
+        if master[:2] != ['/srv/projects', '/etc/auto.projects'] or master[2:] not in (
+            [f'--timeout={t["timeout"]}'], ['--timeout', str(t['timeout'])]
+        ):
+            return False
+        return (
+            len(share) == 3
+            and share[0] == 'build'
+            and set(share[1].removeprefix('-').split(',')) in (
+                {'ro', 'fstype=nfs4'}, {'ro', 'fstype=nfs', 'vers=4'}, {'ro', 'fstype=nfs', 'nfsvers=4'}
+            )
+            and share[2] == 'vault.invalid:/exports/build'
+        )
     if op=='repo':
         cp=configparser.ConfigParser(interpolation=None)
         cp.read(sorted((root/'repos').glob('*.repo')))

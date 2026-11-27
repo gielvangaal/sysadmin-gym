@@ -350,5 +350,39 @@
     "difficulty": "intermediate",
     "operation": "network_route",
     "number": 18
+  },
+  {
+    "id": "recovery-ssh-policy",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair a disposable SSH server authentication policy.",
+    "hint": "Review PermitRootLogin, PasswordAuthentication and KbdInteractiveAuthentication. Check your policy with sshd -T -f.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "operation": "ssh_policy",
+    "number": 19,
+    "requires": "sshd"
+  },
+  {
+    "id": "recovery-autofs-map",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair an indirect automounter map.",
+    "hint": "Review auto.master(5) and autofs(5). The master entry sets the timeout; the indirect entry sets NFS options.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "operation": "autofs_map",
+    "number": 20
+  },
+  {
+    "id": "recovery-journal-rotation",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair journal space and rotation limits.",
+    "hint": "Use SystemMaxUse and SystemMaxFileSize in the Journal section.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "operation": "journal_rotation",
+    "number": 21
   }
 ]

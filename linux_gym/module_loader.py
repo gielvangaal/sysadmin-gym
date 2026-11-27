@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-ENGINE_VERSION='3.2.1'
+ENGINE_VERSION='3.2.2'
 def version(s):
     parts=str(s).split('.')
     if len(parts)!=3 or any(not p.isdigit() for p in parts):raise ValueError('Invalid version: '+str(s))

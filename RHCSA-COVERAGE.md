@@ -13,14 +13,14 @@ validation. The same exercise can cover a skill in several reference labs.
 | RH124 15 · Processes | Process signaling | Identify and manage controlled CPU load |
 | RH124 16 · Services | Recovery service fixture and `practical-service-enable` | Live start, stop and disable |
 | RH124 18 · Network configuration | `recovery-network-dual` | Assign and verify multiple addresses on an isolated interface |
-| RH124 19 · SSH | Ed25519 key generation | Verify key authentication and SSH daemon policy on an isolated listener |
-| RH124 20 · Manage a server | SSH key and repository fixtures | Secure SSH login and perform package transactions |
+| RH124 19 · SSH | Ed25519 key generation and `recovery-ssh-policy` (effective daemon configuration) | Verify a live key-authenticated login on an isolated listener |
+| RH124 20 · Manage a server | SSH key, effective SSH policy and repository fixtures | Verify live SSH login and perform package transactions |
 | RH124 20 · Manage files | Files and shell modules | Cross-check all lab steps against existing exercise IDs |
 | RH124 20 · Manage networks | Network diagnostics, resolver fixture and `recovery-network-route` | Static hostname, local name resolution and live isolated routing practice |
 | RH124 20 · Users, permissions and processes | ACL, isolated account database exercises and process signaling | Controlled CPU load and further account lifecycle tasks |
 | RH124 20 · Mount and find | File audits | Mount an isolated filesystem and audit its contents |
 | RH134 1 · Shell scripting | Parameterized executable shell report | Add a loop and redirected-output scenario |
-| RH134 5 · Logging | `recovery-journal`, log retention | Timezone, journal rotation, and routing authentication events |
+| RH134 5 · Logging | `recovery-journal`, `recovery-journal-rotation`, log retention | Timezone, live journal rotation and routing authentication events |
 | RH134 6 · SELinux | Optional SELinux context task | Diagnose denial evidence and verify a scoped policy correction |
 | RH134 8 · Transfer | SSH key generation | Local isolated rsync and SCP endpoints |
 | RH134 9 · Tuning | Process observations | Tune a disposable process and practice profile selection |
@@ -29,10 +29,10 @@ validation. The same exercise can cover a skill in several reference labs.
 | RH134 12 · Boot | `recovery-boot-mount`, `practical-boot-target` | Diagnose boot evidence and repair additional boot issues |
 | RH134 13 · Superuser recovery | — | Practice recovery decisions on a mock boot transcript and isolated account state |
 | RH134 14 · Network security | Firewalld zone fixture and optional port task | Combined web service, scoped firewall and SELinux troubleshooting |
-| RH134 15 · Network storage | `recovery-nfs-mount` | Implement an isolated NFS endpoint and autofs map scenario |
+| RH134 15 · Network storage | `recovery-nfs-mount`, `recovery-autofs-map` | Validate live NFS and autofs outcomes against an isolated export |
 | RH134 19 · Boot and maintenance | `recovery-boot-mount`, `practical-boot-target`, `recovery-timer`, cron fragment | Run and verify a scheduled job |
 | RH134 19 · Storage | `recovery-nfs-mount`, `recovery-swap-fstab`, `practical-swap-image`, `practical-tmpfiles-apply` | Live NFS mount, swap and LVM workflows |
-| RH134 19 · Server security | SSH key, firewall and optional SELinux exercises | Isolated SSH authentication and SELinux boolean diagnostics |
+| RH134 19 · Server security | SSH key, effective SSH policy, firewall and optional SELinux exercises | Live SSH authentication and SELinux boolean diagnostics |
 
 The catalog total includes parameterized templates. Count distinct outcomes
 separately when evaluating the exercise target.

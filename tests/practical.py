@@ -132,6 +132,35 @@ class PracticalExercises(unittest.TestCase):
         path.write_text(initial + f'route1={task["destination"]},{task["gateway"]},50\n')
         self.assertTrue(self.grade(task))
 
+    def test_ssh_policy(self):
+        task, root = self.exercise('recovery-ssh-policy', 'sshd', 'ssh-keygen')
+        config = root / 'sshd_config'
+        policy = (f'HostKey="{root / "ssh_host_ed25519_key"}"\n'
+                  'PermitRootLogin no\nPasswordAuthentication no\n'
+                  'KbdInteractiveAuthentication no\nPubkeyAuthentication yes\n')
+        config.write_text(policy)
+        self.assertTrue(self.grade(task))
+        config.write_text('PermitRootLogin prohibit-password\n' + policy)
+        self.assertFalse(self.grade(task))
+
+    def test_indirect_autofs(self):
+        task, root = self.exercise('recovery-autofs-map')
+        (root / 'auto.master').write_text(f'/srv/projects /etc/auto.projects --timeout={task["timeout"]}\n')
+        share = root / 'auto.projects'
+        share.write_text('build -fstype=nfs,vers=4,rw vault.invalid:/exports/build\n')
+        self.assertFalse(self.grade(task))
+        share.write_text('build -vers=4,ro,fstype=nfs vault.invalid:/exports/build\n')
+        self.assertTrue(self.grade(task))
+
+    def test_journal_limits(self):
+        task, root = self.exercise('recovery-journal-rotation')
+        path = root / 'journald.conf'
+        path.write_text(f'[Journal]\nStorage=persistent\nSystemMaxUse={task["number"]}M\n')
+        self.assertFalse(self.grade(task))
+        with path.open('a') as config:
+            config.write('SystemMaxFileSize=8M\n')
+        self.assertTrue(self.grade(task))
+
     def test_default_round_prioritizes_networking(self):
         for _ in range(5):
             tasks = cli.choose_tasks(7, False)
