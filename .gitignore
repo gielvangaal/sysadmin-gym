@@ -5,3 +5,8 @@ history
 module-backups/
 __pycache__/
 *.pyc
+
+backups/
+dist/
+progress/
+progress.json

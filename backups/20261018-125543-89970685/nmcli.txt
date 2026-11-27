@@ -1,3 +1,0 @@
-enp1s0:7692b3f9-27f4-3d77-8aac-3670b0fa143e:802-3-ethernet:enp1s0
-Wired connection 1:7a3b6981-702b-37c2-8c43-9b25b7c3fd3b:802-3-ethernet:enp7s0
-lo:0d648c48-cb55-4056-b310-51d09a4e8936:loopback:lo

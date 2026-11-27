@@ -2,7 +2,7 @@
 import json, math, random, time
 from collections import Counter, defaultdict
 
-DEFAULT={'version':'3.2.0','tasks_per_round':7,
+DEFAULT={'version':'3.2.3','tasks_per_round':7,
  'modules':[{'name':'network','enabled':True,'count':3,'every':1},
             {'name':'permissions','enabled':True,'count':1,'every':1},
             {'name':'files','enabled':True,'count':1,'every':1},
@@ -24,10 +24,11 @@ def config(root):
     return cfg
 
 def read_history(root):
-    path=root/'history'/'events.jsonl'
+    path=root/'progress'/'events.jsonl'
     stats=defaultdict(lambda:{'pass':0,'fail':0,'skipped':0,'last':None})
     topics=defaultdict(lambda:{'pass':0,'fail':0,'skipped':0})
     rounds=0
+    checked=set()
     if path.exists():
         for line in path.read_text().splitlines():
             if not line.strip():continue
@@ -39,13 +40,17 @@ def read_history(root):
                         stats[r['id']]['skipped']+=1;topics[r['group']]['skipped']+=1
             if ev['event']=='check':
                 for r in ev['results']:
+                    identity=(ev['session'],r['id'])
+                    if identity in checked:
+                        continue
+                    checked.add(identity)
                     key='pass' if r['ok'] else 'fail'
                     stats[r['id']][key]+=1
                     topics[r['group']][key]+=1
                     stats[r['id']]['last']=r['ok']
     # Old progress.json contains completed v3 rounds; keep it as a baseline
     # only for tasks with no new events, avoiding double counting.
-    old=root/'progress.json'
+    old=root/'progress'/'legacy.json'
     if old.exists():
         legacy=json.loads(old.read_text())
         for tid,totals in legacy.items():
@@ -56,7 +61,7 @@ def read_history(root):
     return {'tasks':stats,'topics':topics,'rounds':rounds}
 
 def record(root,event):
-    directory=root/'history';directory.mkdir(exist_ok=True)
+    directory=root/'progress';directory.mkdir(exist_ok=True)
     event['timestamp']=time.strftime('%Y-%m-%dT%H:%M:%S%z')
     # Append and fsync: a check event is durable before user resets workspace.
     import os
@@ -83,7 +88,7 @@ def summary(root):
     h=read_history(root)
     print('Completed rounds:',h['rounds'])
     for name,t in sorted(h['topics'].items()):
-        print(f'{name:14} PASS {t["pass"]:3} FAIL {t["fail"]:3} UNCHECKED {t["skipped"]:3}')
+        print(f'{name:14} FIRST PASS {t["pass"]:3} FIRST FAIL {t["fail"]:3} UNCHECKED {t["skipped"]:3}')
     print('Most missed exercises:')
     for tid,t in sorted(h['tasks'].items(),key=lambda it:(-it[1]['fail'],it[0]))[:12]:
         print(f'  {tid:22} pass={t["pass"]} fail={t["fail"]} unchecked={t["skipped"]}')
