@@ -53,7 +53,7 @@ def choose_tasks(count,system):
     cfg=config(ROOT)
     history=read_history(ROOT)
     round_no=history['rounds']+1
-    pool=[t for t in TASKS if t['group']!='system' and t['kind'] not in ('cpu','journal','block') and (t['group']!='tls' or shutil.which('openssl')) ]
+    pool=[t for t in TASKS if t['group']!='system' and (not t.get('requires') or shutil.which(t['requires'])) and t['kind'] not in ('cpu','journal','block') and (t['group']!='tls' or shutil.which('openssl')) ]
     modules=cfg['modules']
     selected=[]
     # Explicit per-module quotas, with no duplicate exercise IDs.
@@ -91,6 +91,9 @@ def prepare(t,i,port,iface):
     if kind in ('copy','move','hardlink','symlink','compare'):
         t['source']=str(WORK/f'ex{i:02}-source.txt')
         Path(t['source']).write_text('Linux Gym practice\n')
+    if kind=='practical':
+        from .practical import prepare as prepare_practical
+        return prepare_practical(t)
     if kind=='config_recovery':
         from .config_recovery import prepare as prepare_config
         return prepare_config(t)
@@ -272,6 +275,9 @@ def expected(t):
     kind=t['kind']; result=Path(t['result']); target=Path(t['target']); src=Path(t.get('source',WORK/'source.txt'))
     def content():return result.read_text().strip()
     def matches(value):return result.exists() and content()==str(value)
+    if kind=='practical':
+        from .practical import check as check_practical
+        return check_practical(t)
     if kind=='config_recovery':
         from .config_recovery import check as check_config
         return check_config(t)
@@ -406,7 +412,7 @@ def check(args):
     passed=0
     for i,t in enumerate(session['tasks'],1):
         try:ok=expected(t)
-        except (OSError,ValueError,IndexError,KeyError):ok=False
+        except (OSError,ValueError,IndexError,KeyError,subprocess.TimeoutExpired):ok=False
         print(f'{"PASS" if ok else "FAIL"} {i}. {t["id"]} ({t["kind"]})')
         passed+=ok
         results.append({'id':t['id'],'group':t['group'],'kind':t['kind'],'ok':bool(ok)})

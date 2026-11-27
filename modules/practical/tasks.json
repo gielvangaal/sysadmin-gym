@@ -1,0 +1,125 @@
+[
+  {
+    "id": "practical-script",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Use positional parameters, awk numeric comparisons, and executable permissions.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "script"
+  },
+  {
+    "id": "practical-links",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review ln(1) and inode numbers.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "links"
+  },
+  {
+    "id": "practical-retention",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Inspect modification times and sort by age.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "retention"
+  },
+  {
+    "id": "practical-sshkey",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review ssh-keygen(1).",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "sshkey",
+    "requires": "ssh-keygen"
+  },
+  {
+    "id": "practical-acl",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review setfacl and getfacl.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "acl",
+    "requires": "setfacl"
+  },
+  {
+    "id": "practical-compress",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review xz options for retaining input.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "compress"
+  },
+  {
+    "id": "practical-sed",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review sed and anchored patterns.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "sed"
+  },
+  {
+    "id": "practical-fifo",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review mkfifo and mode bits.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "fifo"
+  },
+  {
+    "id": "practical-sparse",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review truncate and apparent versus allocated size.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "sparse"
+  },
+  {
+    "id": "practical-checksum",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review sha256sum verification format.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "checksum"
+  },
+  {
+    "id": "practical-rpm",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review rpm query format.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "rpm",
+    "requires": "rpm"
+  },
+  {
+    "id": "practical-cron",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Practical task",
+    "hint": "Review crontab(5).",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "cron"
+  }
+]
