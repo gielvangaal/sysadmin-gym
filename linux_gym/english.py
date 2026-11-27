@@ -3,7 +3,7 @@ from pathlib import Path
 
 def prompt_for(t):
     k=t['kind']; w=Path(t['target']).parent; target=t['target']; result=t['result']; v=t.get('variant','A')
-    src=w/'source.txt'; tree=w/'tree'; log=w/'application.log'; access=w/'access.log'; inv=w/'inventory.csv'
+    src=Path(t.get('source',w/'source.txt')); tree=w/'tree'; log=w/'application.log'; access=w/'access.log'; inv=w/'inventory.csv'
     lead='You are preparing a development environment. ' if v=='A' else 'During a routine maintenance window, '
     if k in ('mode','symbolic'):
         mode=int(t['mode'],8)

@@ -53,7 +53,7 @@ def choose_tasks(count,system):
     cfg=config(ROOT)
     history=read_history(ROOT)
     round_no=history['rounds']+1
-    pool=[t for t in TASKS if t['group']!='system' and (t['group']!='tls' or shutil.which('openssl')) ]
+    pool=[t for t in TASKS if t['group']!='system' and t['kind'] not in ('cpu','journal','block') and (t['group']!='tls' or shutil.which('openssl')) ]
     modules=cfg['modules']
     selected=[]
     # Explicit per-module quotas, with no duplicate exercise IDs.
@@ -71,7 +71,7 @@ def choose_tasks(count,system):
             idx=next((i for i in range(len(selected)-1,-1,-1) if selected[i]['group'] not in ('network','tls')),len(selected)-1)
             selected.pop(idx)
     while len(selected)<count:
-        options=[t for t in pool if t['id'] not in {x['id'] for x in selected}]
+        options=[t for t in pool if t['id'] not in {x['id'] for x in selected} and t['group'] in {m['name'] for m in modules if m.get('enabled',True)} and (t['kind'] not in ('move','signal') or not any(x['kind']==t['kind'] for x in selected))]
         if not options:break
         selected.append(pick(options,history,cfg))
     random.shuffle(selected)
@@ -88,6 +88,9 @@ def prepare(t,i,port,iface):
     t['iface']=iface
     t['variant']=t.get('variant','A')
     desc=t['description']
+    if kind in ('copy','move','hardlink','symlink','compare'):
+        t['source']=str(WORK/f'ex{i:02}-source.txt')
+        Path(t['source']).write_text('Linux Gym practice\n')
     if kind=='config_recovery':
         from .config_recovery import prepare as prepare_config
         return prepare_config(t)
@@ -109,7 +112,7 @@ def prepare(t,i,port,iface):
             desc=desc.format(tree=WORK/'tree',result=t['result'])
         else:desc=desc.format(target=target)
     elif t['group']=='files':
-        src=WORK/'source.txt'; tree=WORK/'tree'; result=t['result'];
+        src=Path(t.get('source',WORK/'source.txt')); tree=WORK/'tree'; result=t['result'];
         texts={'copy':f'Kopieer {src} naar {result}.','move':f'Verplaats {src} naar {result}.','hardlink':f'Maak een hardlink {result} naar {src}.','symlink':f'Maak een symbolische link {result} naar {src}.','find_name':f'Zoek onder {tree} alle .log-bestanden en schrijf de BESTANDSNAMEN (één per regel, gesorteerd) naar {result}.','find_size':f'Zoek bestanden onder {tree} groter dan 1 MiB en schrijf hun namen naar {result}.','archive':f'Maak een gzip-tararchief {result} van de directory tree uit workspace.','extract':f'Pak het archief {WORK/"sample.tar.gz"} uit naar {target} (maak de directory eerst).','compare':f'Vergelijk source.txt met copy.txt en sla alleen het woord gelijk of verschillend op in {result}.','count_lines':f'Tel regels in application.log en sla uitsluitend het getal op in {result}.'}
         desc=texts[kind]
         if kind=='extract':
@@ -226,7 +229,7 @@ def scenario(t, fallback):
 def start(args):
     if SESSION.exists():raise SystemExit('A session is already active. Run check or reset first.')
     if WORK.exists():raise SystemExit('A workspace already exists. Run reset first; existing files will not be overwritten.')
-    if args.system and os.geteuid()==0:raise SystemExit('Run Linux Gym as a regular user; use sudo only when completing tasks.')
+    if os.geteuid()==0:raise SystemExit('Run Linux Gym as a regular user; use sudo only when completing tasks.')
     if args.interface:
         p=run('nmcli','-g','GENERAL.DEVICE','device','show',args.interface)
         if p.returncode or args.interface=='lo':raise SystemExit('Invalid practice interface or nmcli is unavailable.')
@@ -266,7 +269,7 @@ def start(args):
     if args.system:print('WARNING: reset does NOT revert system changes. Restore your VM snapshot if needed.')
 
 def expected(t):
-    kind=t['kind']; result=Path(t['result']); target=Path(t['target']); src=WORK/'source.txt'
+    kind=t['kind']; result=Path(t['result']); target=Path(t['target']); src=Path(t.get('source',WORK/'source.txt'))
     def content():return result.read_text().strip()
     def matches(value):return result.exists() and content()==str(value)
     if kind=='config_recovery':
@@ -368,8 +371,8 @@ def expected(t):
     if kind=='mounts':return matches(run('findmnt','-n','-o','SOURCE','/').stdout.strip())
     if kind=='block':return result.exists() and bool(content()) # machine dependent, observational
     if kind=='largest':
-        try:return result.exists() and int(content())>0
-        except ValueError:return False
+        try:return matches(run('du','-sk',str(WORK/'tree')).stdout.split()[0])
+        except (ValueError,IndexError):return False
     if kind=='cpu':
         try:return result.exists() and int(content())>0
         except ValueError:return False
