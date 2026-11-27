@@ -2,7 +2,7 @@
 import json, math, random, time
 from collections import Counter, defaultdict
 
-DEFAULT={'version':'3.2.0','tasks_per_round':7,
+DEFAULT={'version':'3.2.1','tasks_per_round':7,
  'modules':[{'name':'network','enabled':True,'count':3,'every':1},
             {'name':'permissions','enabled':True,'count':1,'every':1},
             {'name':'files','enabled':True,'count':1,'every':1},

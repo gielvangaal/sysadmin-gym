@@ -328,5 +328,27 @@
     "difficulty": "advanced",
     "operation": "tmpfiles",
     "number": 16
+  },
+  {
+    "id": "recovery-network-dual",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Add a second static IPv4 address to an offline profile.",
+    "hint": "Use separate address1 and address2 entries under [ipv4].",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "network_dual",
+    "number": 17
+  },
+  {
+    "id": "recovery-network-route",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair routing in an offline NetworkManager profile.",
+    "hint": "Use route1=DESTINATION,NEXT_HOP under [ipv4].",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "network_route",
+    "number": 18
   }
 ]

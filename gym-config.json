@@ -1,11 +1,11 @@
 {
-  "version": "3.2.0",
+  "version": "3.2.1",
   "tasks_per_round": 7,
   "modules": [
     {
       "name": "network",
       "enabled": true,
-      "count": 1,
+      "count": 2,
       "every": 1
     },
     {

@@ -1,5 +1,6 @@
 """Offline configuration recovery with real Linux tools and isolated paths."""
 import configparser
+import ipaddress
 from pathlib import Path
 
 # These fixtures represent configuration captured from a lab machine.
@@ -85,6 +86,23 @@ def prepare(t):
         (root/'resolv.conf').write_text('nameserver 192.0.2.254\nsearch wrong.invalid\n')
         t['dns']=f'192.0.2.{n+10}'
         instruction=f'A captured resolver configuration in {root}/resolv.conf points to the wrong DNS server and search domain. Repair the file so the only nameserver is {t["dns"]} and the search domain is gym.test. This is an offline configuration exercise; leave the live resolver unchanged.'
+    elif op in ('network_dual', 'network_route'):
+        host = n + 30
+        t['address'] = f'192.0.2.{host}/24'
+        t['secondary'] = f'198.51.100.{host}/24'
+        t['destination'] = f'203.0.113.{(n % 4) * 64}/26'
+        t['gateway'] = '192.0.2.1'
+        profile = root / 'repair.nmconnection'
+        profile.touch(mode=0o600)
+        profile.write_text('[connection]\nid=repair\ntype=ethernet\nautoconnect=false\n\n'
+                           '[ipv4]\nmethod=manual\nnever-default=true\n'
+                           f'address1={t["address"]}\n')
+        if op == 'network_dual':
+            goal = f'Assign both {t["address"]} and {t["secondary"]} to the Ethernet profile.'
+        else:
+            goal = f'Keep {t["address"]} and add a route to {t["destination"]} via {t["gateway"]}.'
+        instruction = (f'{goal} Repair {profile}. Keep autoconnect disabled and the default route '
+                       'unset. Leave the profile offline.')
     elif op=='network':
         t['address']=f'192.0.2.{n+10}/24'
         instruction=f'Create an inactive NetworkManager keyfile at {root}/gym.nmconnection for an Ethernet profile named gym-training with manual IPv4 address {t["address"]}, no gateway, no DNS, and autoconnect disabled. Do not import or activate the profile. Use mode 600.'
@@ -117,6 +135,42 @@ def check(t):
     if op=='dns':
         lines=[l.split() for l in (root/'resolv.conf').read_text().splitlines() if l.strip() and not l.lstrip().startswith('#')]
         return [l for l in lines if l[0]=='nameserver']==[['nameserver',t['dns']]] and [l for l in lines if l[0]=='search']==[['search','gym.test']]
+    if op in ('network_dual', 'network_route'):
+        path = root / 'repair.nmconnection'
+        profile = configparser.ConfigParser(interpolation=None)
+        try:
+            profile.read_string(path.read_text())
+        except configparser.Error:
+            return False
+        connection = profile['connection']
+        ipv4 = profile['ipv4']
+        if (
+            path.stat().st_mode & 0o777 != 0o600
+            or connection['type'] not in ('ethernet', '802-3-ethernet')
+            or connection.getboolean('autoconnect', fallback=True)
+            or ipv4['method'] != 'manual'
+            or not ipv4.getboolean('never-default', fallback=False)
+            or ipv4.get('gateway')
+        ):
+            return False
+        addresses = [
+            str(ipaddress.IPv4Interface(value))
+            for key, value in ipv4.items()
+            if key.startswith('address') and key.removeprefix('address').isdigit()
+        ]
+        routes = [
+            [field.strip() for field in value.split(',')]
+            for key, value in ipv4.items()
+            if key.startswith('route') and key.removeprefix('route').isdigit()
+        ]
+        if op == 'network_dual':
+            return sorted(addresses) == sorted([t['address'], t['secondary']]) and not routes
+        return (
+            addresses == [t['address']]
+            and len(routes) == 1
+            and routes[0][:2] == [t['destination'], t['gateway']]
+            and (len(routes[0]) == 2 or len(routes[0]) == 3 and routes[0][2].isdigit())
+        )
     if op=='network':
         p=root/'gym.nmconnection'; cp=configparser.ConfigParser(interpolation=None); cp.read(p)
         return p.stat().st_mode&0o777==0o600 and cp['connection'].get('id')=='gym-training' and cp['connection'].get('type') in ('ethernet','802-3-ethernet') and cp['connection'].get('autoconnect')=='false' and cp['ipv4'].get('method')=='manual' and cp['ipv4'].get('address1')==t['address'] and not cp['ipv4'].get('gateway') and not cp['ipv4'].get('dns')

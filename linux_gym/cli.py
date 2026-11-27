@@ -65,11 +65,11 @@ def choose_tasks(count,system):
             options=[t for t in available if t['id'] not in {x['id'] for x in selected} and (t['kind'] not in ('move','signal') or not any(x['kind']==t['kind'] for x in selected))]
             if not options:break
             selected.append(pick(options,history,cfg))
-    if len(selected)>count:
-        # Keep explicit network quota and occasional TLS by trimming regular tasks.
-        while len(selected)>count:
-            idx=next((i for i in range(len(selected)-1,-1,-1) if selected[i]['group'] not in ('network','tls')),len(selected)-1)
-            selected.pop(idx)
+    # Keep the networking quota and rotate the other modules when quotas
+    # collectively exceed the round size.
+    while len(selected) > count:
+        flexible = [i for i, task in enumerate(selected) if task['group'] not in ('network', 'tls')]
+        selected.pop(random.choice(flexible) if flexible else -1)
     while len(selected)<count:
         options=[t for t in pool if t['id'] not in {x['id'] for x in selected} and t['group'] in {m['name'] for m in modules if m.get('enabled',True)} and (t['kind'] not in ('move','signal') or not any(x['kind']==t['kind'] for x in selected))]
         if not options:break

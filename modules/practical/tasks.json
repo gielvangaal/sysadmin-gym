@@ -121,5 +121,114 @@
     "tier": "daily",
     "difficulty": "intermediate",
     "operation": "cron"
+  },
+  {
+    "id": "practical-accounts",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Create a locked local account and its primary group.",
+    "hint": "Review groupadd and useradd, especially --prefix, --gid, --uid and --no-create-home.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "accounts",
+    "requires": "useradd"
+  },
+  {
+    "id": "practical-membership",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Repair supplementary group membership.",
+    "hint": "Review usermod --prefix --append --groups.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "membership",
+    "requires": "usermod"
+  },
+  {
+    "id": "practical-expiry",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Enforce temporary account expiry and password inactivity.",
+    "hint": "Review usermod --prefix --expiredate and --inactive.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "expiry",
+    "requires": "usermod"
+  },
+  {
+    "id": "practical-swap-image",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Prepare a fully allocated swap file.",
+    "hint": "Review dd or fallocate, chmod and mkswap -L. Inspect the file with blkid -p.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "swap_image",
+    "requires": "mkswap"
+  },
+  {
+    "id": "practical-gpt-image",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Partition a disposable image with a GPT.",
+    "hint": "Review fdisk, parted or sfdisk. GPT has a Linux filesystem partition type.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "gpt_image",
+    "requires": "sfdisk"
+  },
+  {
+    "id": "practical-xfs-image",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Format a disposable image as XFS.",
+    "hint": "Review mkfs.xfs -L and -m uuid=, then inspect the result with blkid -p.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "xfs_image",
+    "requires": "mkfs.xfs"
+  },
+  {
+    "id": "practical-boot-target",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Repair the boot target in an offline system root.",
+    "hint": "Review systemctl --root=PATH set-default TARGET.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "boot_target",
+    "requires": "systemctl"
+  },
+  {
+    "id": "practical-service-enable",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Enable a service in an offline system root.",
+    "hint": "Use systemctl --root=PATH enable and inspect the multi-user.target dependency.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "service_enable",
+    "requires": "systemctl"
+  },
+  {
+    "id": "practical-tmpfiles-apply",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Repair and apply a tmpfiles rule in an offline root.",
+    "hint": "Review tmpfiles.d(5) and systemd-tmpfiles --root=PATH --create staging.conf.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "tmpfiles_apply",
+    "requires": "systemd-tmpfiles"
+  },
+  {
+    "id": "practical-shared-directory",
+    "group": "practical",
+    "kind": "practical",
+    "description": "Set shared-directory access and inheritance.",
+    "hint": "Use setgid for group inheritance and the sticky bit for deletion rules.",
+    "tier": "daily",
+    "difficulty": "intermediate",
+    "operation": "shared_directory"
   }
 ]

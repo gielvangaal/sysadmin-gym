@@ -1,7 +1,7 @@
 {
   "name": "practical",
-  "version": "3.2.1",
-  "engine_min": "3.2.0",
+  "version": "3.2.2",
+  "engine_min": "3.2.1",
   "engine_max_exclusive": "4.0.0",
   "task_file": "tasks.json"
 }
