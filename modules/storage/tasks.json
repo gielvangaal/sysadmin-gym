@@ -1,0 +1,48 @@
+[
+  {
+    "id": "storage-live-xfs",
+    "group": "storage",
+    "kind": "workbench",
+    "operation": "live_xfs",
+    "description": "Mount a loop-backed XFS filesystem.",
+    "hint": "Use losetup --find --show only with the exercise image. Check its backing file before using mkfs.xfs.",
+    "tier": "system",
+    "difficulty": "advanced",
+    "requires": [
+      "losetup",
+      "mkfs.xfs",
+      "mount"
+    ]
+  },
+  {
+    "id": "storage-live-lvm",
+    "group": "storage",
+    "kind": "workbench",
+    "operation": "live_lvm",
+    "description": "Extend a volume group and logical volume on two loop-backed PVs.",
+    "hint": "Verify both loop devices by backing file. Use the exact lab VG name for vgcreate, vgextend, lvcreate and lvextend.",
+    "tier": "system",
+    "difficulty": "advanced",
+    "requires": [
+      "losetup",
+      "lvm",
+      "mkfs.xfs",
+      "mount"
+    ]
+  },
+  {
+    "id": "storage-live-swap",
+    "group": "storage",
+    "kind": "workbench",
+    "operation": "live_swap",
+    "description": "Activate a disposable swap file.",
+    "hint": "Use dd, chmod, mkswap and swapon only with the exercise file. Run swapoff on it before resetting.",
+    "tier": "system",
+    "difficulty": "advanced",
+    "requires": [
+      "mkswap",
+      "swapon",
+      "swapoff"
+    ]
+  }
+]

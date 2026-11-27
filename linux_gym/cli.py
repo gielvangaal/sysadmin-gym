@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Linux Gym v3 — stdlib-only RHEL CLI."""
+"""Sysadmin Gym v4 CLI for RHEL practice."""
 import argparse, json, os, random, shutil, socket, subprocess, sys, tarfile, tempfile, time, ipaddress, math
 from pathlib import Path
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from .catalog import TASKS
 from .adaptive import config, read_history, record, weight_for, summary
 from .english import prompt_for, hint_for
+from . import workbench
 ROOT=Path(__file__).resolve().parent.parent
 WORK=ROOT/'workspace'; BACKUPS=ROOT/'backups'; PROGRESS=ROOT/'progress'/'legacy.json'; SESSION=ROOT/'session.json'
 CATEGORIES={'permissions','files','shell','network','observe'}
@@ -49,11 +50,28 @@ def seed_workspace():
     (WORK/'web'/'health.txt').write_text('linux-gym-ok\n')
     (WORK/'numbers.txt').write_text('20\n3\n100\n5\n12\n')
 
+def tools_available(task):
+    required = task.get('requires', [])
+    if isinstance(required, str):
+        required = [required]
+    if not all(shutil.which(tool) for tool in required):
+        return False
+    operation = task.get('operation')
+    if operation in workbench.namespace_labs.OPERATIONS:
+        return workbench.namespace_labs.available()
+    if operation in workbench.user_services.OPERATIONS:
+        return workbench.user_services.available()
+    if operation in ('acl', 'acl_inherit'):
+        return workbench.admin_files.acl_available(ROOT)
+    if operation == 'sftp_transfer':
+        return workbench.transfer_labs.sftp_server() is not None
+    return True
+
 def choose_tasks(count,system):
     cfg=config(ROOT)
     history=read_history(ROOT)
     round_no=history['rounds']+1
-    pool=[t for t in TASKS if t['group']!='system' and (not t.get('requires') or shutil.which(t['requires'])) and t['kind'] not in ('cpu','journal','block') and (t['group']!='tls' or shutil.which('openssl')) ]
+    pool=[t for t in TASKS if t['group'] not in ('system', 'storage') and tools_available(t) and t['kind'] not in ('cpu','journal','block') and (t['group']!='tls' or shutil.which('openssl')) ]
     modules=cfg['modules']
     selected=[]
     # Explicit per-module quotas, with no duplicate exercise IDs.
@@ -68,7 +86,10 @@ def choose_tasks(count,system):
     # Keep the networking quota and rotate the other modules when quotas
     # collectively exceed the round size.
     while len(selected) > count:
-        flexible = [i for i, task in enumerate(selected) if task['group'] not in ('network', 'tls')]
+        core = {'network', 'tls', 'practical', 'recovery', 'workbench'}
+        flexible = [i for i, task in enumerate(selected) if task['group'] not in core]
+        if not flexible:
+            flexible = [i for i, task in enumerate(selected) if task['group'] not in ('network', 'tls')]
         selected.pop(random.choice(flexible) if flexible else -1)
     while len(selected)<count:
         options=[t for t in pool if t['id'] not in {x['id'] for x in selected} and t['group'] in {m['name'] for m in modules if m.get('enabled',True)} and (t['kind'] not in ('move','signal') or not any(x['kind']==t['kind'] for x in selected))]
@@ -91,6 +112,8 @@ def prepare(t,i,port,iface):
     if kind in ('copy','move','hardlink','symlink','compare'):
         t['source']=str(WORK/f'ex{i:02}-source.txt')
         Path(t['source']).write_text('Linux Gym practice\n')
+    if kind == 'workbench':
+        return workbench.prepare(t)
     if kind=='practical':
         from .practical import prepare as prepare_practical
         return prepare_practical(t)
@@ -239,6 +262,13 @@ def start(args):
         # Refuse default-route NIC even when system tasks are selected.
         default=run('ip','-4','route','show','default').stdout
         if any(f'dev {args.interface}' in line.split(' metric ')[0] for line in default.splitlines()):raise SystemExit('REFUSED: this interface provides a default route. Use the secondary NIC.')
+    if args.storage_lab and (args.system or args.lab or args.interface):
+        raise SystemExit('Start the storage lab independently of the network system lab.')
+    storage_tasks = []
+    if args.storage_lab:
+        storage_tasks = [task for task in TASKS if task['group'] == 'storage']
+        if not all(tools_available(task) for task in storage_tasks):
+            raise SystemExit('Install lvm2, xfsprogs and util-linux for the storage lab.')
     if args.system and not args.interface:raise SystemExit('--system requires --interface SECONDARY_NIC to protect SSH access.')
     if args.lab and not args.system:raise SystemExit('--lab requires --system and --interface.')
     if args.lab and not shutil.which('semanage'):raise SystemExit('SELinux lab requires semanage (policycoreutils-python-utils).' )
@@ -264,9 +294,18 @@ def start(args):
         selected[-2:]=system_tasks[:2]
         if args.lab:
             selected=selected[:max(0,args.count-4)]+system_tasks
-    tasks=[prepare(t,i,port,args.interface) for i,t in enumerate(selected,1)]
-    save_json(SESSION,{'tasks':tasks,'backup':str(backup),'started':time.time(),'port':port,'session_id':str(time.time_ns()),'check_number':0})
-    print(f'SYSADMIN GYM v4 development — {len(tasks)} tasks | configuration inventory: {backup.name}\n')
+    if storage_tasks:
+        selected[-len(storage_tasks):] = storage_tasks
+    try:
+        tasks=[prepare(t,i,port,args.interface) for i,t in enumerate(selected,1)]
+        save_json(SESSION,{'tasks':tasks,'backup':str(backup),'started':time.time(),'port':port,'session_id':str(time.time_ns()),'check_number':0})
+    except BaseException:
+        server.terminate()
+        server.wait()
+        workbench.stop_workers(WORK)
+        workbench.user_services.cleanup(WORK)
+        raise
+    print(f'SYSADMIN GYM v4 — {len(tasks)} tasks | configuration inventory: {backup.name}\n')
     for i,t in enumerate(tasks,1):print(f'{i}. [{t["group"]}] {t["description"]}\n')
     print('Commands: ./gym.sh check | ./gym.sh hint NUMBER | ./gym.sh reset')
     if args.system:print('WARNING: reset does NOT revert system changes. Restore your VM snapshot if needed.')
@@ -275,6 +314,8 @@ def expected(t):
     kind=t['kind']; result=Path(t['result']); target=Path(t['target']); src=Path(t.get('source',WORK/'source.txt'))
     def content():return result.read_text().strip()
     def matches(value):return result.exists() and content()==str(value)
+    if kind == 'workbench':
+        return workbench.check(t)
     if kind=='practical':
         from .practical import check as check_practical
         return check_practical(t)
@@ -412,7 +453,7 @@ def check(args):
     passed=0
     for i,t in enumerate(session['tasks'],1):
         try:ok=expected(t)
-        except (OSError,ValueError,IndexError,KeyError,subprocess.TimeoutExpired):ok=False
+        except (OSError,ValueError,IndexError,KeyError,subprocess.SubprocessError):ok=False
         print(f'{"PASS" if ok else "FAIL"} {i}. {t["id"]} ({t["kind"]})')
         passed+=ok
         results.append({'id':t['id'],'group':t['group'],'kind':t['kind'],'ok':bool(ok)})
@@ -431,6 +472,10 @@ def hint(args):
 
 def reset(args):
     session=load_json(SESSION,None)
+    if WORK.exists():
+        resources = workbench.storage_labs.busy_resources(WORK)
+        if resources:
+            raise SystemExit('Release active practice storage before reset: ' + ', '.join(resources))
     if session and any(t['group']=='system' for t in session['tasks']):
         raise SystemExit('System labs make persistent changes. Restore the VM snapshot in virt-manager on the HOST; reset will not undo this lab.')
     if session:
@@ -455,7 +500,10 @@ def reset(args):
         record(ROOT,{'event':'reset','session':session['session_id'],'checks':session.get('check_number',0),
                      'results':final})
     (ROOT/'last_check.json').unlink(missing_ok=True)
-    if WORK.exists():shutil.rmtree(WORK)
+    if WORK.exists():
+        workbench.stop_workers(WORK)
+        workbench.user_services.cleanup(WORK)
+        shutil.rmtree(WORK)
     print('Workspace cleared. Configuration inventories and progress are preserved.')
     print('NOTE: network, firewall, and system changes are NOT reverted automatically. Restore your VM snapshot if necessary.')
 
@@ -463,6 +511,7 @@ def main():
     p=argparse.ArgumentParser(description='Sysadmin Gym — modular RHCSA practice')
     sub=p.add_subparsers(dest='command',required=True)
     s=sub.add_parser('start');s.add_argument('--count',type=int,default=None);s.add_argument('--lab',action='store_true',help='Include SELinux context and tmpfs/fstab tasks (VM snapshot required)');s.add_argument('--system',action='store_true',help='Include nmcli and firewall tasks; secondary NIC only');s.add_argument('--interface',help='Name of secondary virtual NIC')
+    s.add_argument('--storage-lab', action='store_true', help='Include opt-in loop-backed XFS, LVM and swap practice')
     sub.add_parser('check');u=sub.add_parser('install');u.add_argument('archive');rb=sub.add_parser('rollback');rb.add_argument('module');h=sub.add_parser('hint');h.add_argument('number',type=int);sub.add_parser('reset');sub.add_parser('stats');sub.add_parser('list')
     a=p.parse_args()
     if a.command=='start':
@@ -484,5 +533,8 @@ def main():
         summary(ROOT)
     elif a.command=='list':
         from collections import Counter
-        print('Task catalog:',len(TASKS),'templates',dict(Counter(t['group'] for t in TASKS)))
+        groups = Counter(task['group'] for task in TASKS)
+        outcomes = {(task['group'], task['kind'], task.get('operation')) for task in TASKS}
+        print(f'Task catalog: {len(TASKS)} templates across {len(outcomes)} exercise families')
+        print(dict(groups))
 if __name__=='__main__':main()

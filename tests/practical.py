@@ -12,7 +12,7 @@ from linux_gym import cli
 from linux_gym.catalog import TASKS
 
 
-class PracticalExercises(unittest.TestCase):
+class ExerciseCase(unittest.TestCase):
     def exercise(self, exercise_id, *tools):
         for tool in tools:
             if not shutil.which(tool):
@@ -27,13 +27,15 @@ class PracticalExercises(unittest.TestCase):
     def grade(self, task):
         try:
             return cli.expected(task)
-        except (KeyError, OSError, ValueError):
+        except (KeyError, OSError, ValueError, subprocess.SubprocessError):
             return False
 
     @staticmethod
     def command(*args, **kwargs):
         subprocess.run(args, check=True, capture_output=True, text=True, timeout=15, **kwargs)
 
+
+class PracticalExercises(ExerciseCase):
     def test_account_creation(self):
         task, root = self.exercise('practical-accounts', 'groupadd', 'useradd')
         uid = str(23100 + task['number'])
@@ -165,7 +167,9 @@ class PracticalExercises(unittest.TestCase):
         for _ in range(5):
             tasks = cli.choose_tasks(7, False)
             self.assertEqual(len({task['id'] for task in tasks}), 7)
-            self.assertEqual(sum(task['group'] == 'network' for task in tasks), 2)
+            groups = [task['group'] for task in tasks]
+            self.assertEqual(groups.count('network'), 2)
+            self.assertTrue({'practical', 'recovery', 'workbench'} <= set(groups))
 
 
 if __name__ == '__main__':

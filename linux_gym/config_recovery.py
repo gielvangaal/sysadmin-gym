@@ -108,7 +108,7 @@ def prepare(t):
         t['url']=url
         if n%2==0:
             (repo/'gym.repo').write_text('[gym-local]\nname=Gym local\nbaseurl=file:///invalid\nenabled=0\ngpgcheck=1\n')
-        instruction=f'{"Repair" if n%2==0 else "Create"} a DNF repository definition in {repo} with ID gym-local, name Gym local, baseurl {url}, enabled=1 and gpgcheck=0 (unsigned local training fixture only). Do not change system repositories. This fixture has no package metadata; do not install packages.'
+        instruction=f'{"Repair" if n%2==0 else "Create"} a DNF repository definition in {repo} with ID gym-local, name Gym local, baseurl {url}, enabled=1 and gpgcheck=1. Do not change system repositories. This fixture has no package metadata; do not install packages.'
     elif op=='dns':
         (root/'resolv.conf').write_text('nameserver 192.0.2.254\nsearch wrong.invalid\n')
         t['dns']=f'192.0.2.{n+10}'
@@ -214,7 +214,7 @@ def check(t):
     if op=='repo':
         cp=configparser.ConfigParser(interpolation=None)
         cp.read(sorted((root/'repos').glob('*.repo')))
-        return cp.has_section('gym-local') and all(cp['gym-local'].get(k)==v for k,v in {'name':'Gym local','baseurl':t['url'],'enabled':'1','gpgcheck':'0'}.items())
+        return cp.has_section('gym-local') and all(cp['gym-local'].get(k)==v for k,v in {'name':'Gym local','baseurl':t['url'],'enabled':'1','gpgcheck':'1'}.items())
     if op=='dns':
         lines=[l.split() for l in (root/'resolv.conf').read_text().splitlines() if l.strip() and not l.lstrip().startswith('#')]
         return [l for l in lines if l[0]=='nameserver']==[['nameserver',t['dns']]] and [l for l in lines if l[0]=='search']==[['search','gym.test']]

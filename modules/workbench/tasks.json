@@ -1,0 +1,400 @@
+[
+  {
+    "id": "workbench-process-pause",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "process_pause",
+    "description": "Inspect a real process and suspend it.",
+    "hint": "Identify the PID in ps or top and request SIGSTOP.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-process-nice",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "process_nice",
+    "description": "Lower the scheduling priority of a practice worker.",
+    "hint": "Inspect the NI column with ps and use renice for the PID.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-login-policy",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "login_policy",
+    "description": "Repair default password aging.",
+    "hint": "Review PASS_MAX_DAYS, PASS_MIN_DAYS and PASS_WARN_AGE in login.defs.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-account-rotate",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "account_rotate",
+    "description": "Initialize a disposable account password and require rotation.",
+    "hint": "Use openssl passwd -6 and review the password and last change fields in shadow(5).",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "openssl"
+    ]
+  },
+  {
+    "id": "workbench-sudo-scope",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "sudo_scope",
+    "description": "Validate a narrowly scoped sudo delegation.",
+    "hint": "Use a group specification, root run-as and the full command including arguments.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "visudo"
+    ]
+  },
+  {
+    "id": "workbench-hosts",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "hosts",
+    "description": "Repair static hostname and hosts resolution.",
+    "hint": "Use a single static hostname and put the canonical name first in its hosts entry.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-timezone",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "timezone",
+    "description": "Correct the timezone file in an offline root.",
+    "hint": "Look under /usr/share/zoneinfo. A symlink or a copy of the requested zone file is valid.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-auth-log",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "auth_log",
+    "description": "Route authentication warnings and more severe syslog events.",
+    "hint": "Review the facility.priority selector in rsyslog.conf.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-selinux-context",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "selinux_context",
+    "description": "Diagnose an AVC and repair a persistent web-content context.",
+    "hint": "Use the normal HTTP content type and a regular expression that also matches descendants.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-selinux-ports",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "selinux_ports",
+    "description": "Diagnose an HTTP bind denial and repair its port assignment.",
+    "hint": "Use semanage port export format with the HTTP port type and tcp protocol.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-selinux-nfs",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "selinux_nfs",
+    "description": "Repair the policy boolean for NFS home directories.",
+    "hint": "Use persistent semanage boolean export syntax.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-firewall-source",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "firewall_source",
+    "description": "Limit a firewalld zone to the specified source and port.",
+    "hint": "Review source and port elements in firewalld.zone.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-lvm-layout",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "lvm_layout",
+    "description": "Repair an LVM and XFS layout in a Kickstart storage plan.",
+    "hint": "Review part, volgroup and logvol in the RHEL Kickstart reference.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-boot-uuid",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "boot_uuid",
+    "description": "Repair a boot-blocking filesystem identifier.",
+    "hint": "Compare the failed device in the boot log with the UUID in the blkid inventory.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-loop-report",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "loop_report",
+    "description": "Write a loop that produces a separate report for each input item.",
+    "hint": "Read input line by line, skip blanks and redirect printf output to each report.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-rpm-install",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "rpm_install",
+    "description": "Install an original signed RPM into a local prefix.",
+    "hint": "Use rpm -i with --dbpath and --prefix. Use --define to set _tmppath.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "rpm",
+      "rpmkeys"
+    ]
+  },
+  {
+    "id": "workbench-rpm-upgrade",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "rpm_upgrade",
+    "description": "Upgrade a signed RPM in a local package database.",
+    "hint": "Use rpm -U with the same local database and prefix as the first install.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "rpm",
+      "rpmkeys"
+    ]
+  },
+  {
+    "id": "workbench-rpm-remove",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "rpm_remove",
+    "description": "Remove an RPM from a local package database.",
+    "hint": "Use rpm -e and the exercise --dbpath. Query the same database to check.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "rpm",
+      "rpmkeys"
+    ]
+  },
+  {
+    "id": "workbench-dnf-repo",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "dnf_repo",
+    "description": "Restore a package repository with signature verification.",
+    "hint": "Set baseurl and gpgkey to file URLs and enable gpgcheck and repo_gpgcheck.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "dnf"
+    ]
+  },
+  {
+    "id": "workbench-tmpfs-mount",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "tmpfs_mount",
+    "description": "Mount and verify a temporary filesystem in an isolated mount namespace.",
+    "hint": "Use mount -t tmpfs with size, nosuid and nodev options.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "unshare",
+      "mount",
+      "findmnt",
+      "df"
+    ]
+  },
+  {
+    "id": "workbench-rsync-mirror",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "rsync_mirror",
+    "description": "Mirror a directory tree preserving modes and symlinks.",
+    "hint": "Review rsync archive mode, source trailing slash and deletion options.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "rsync"
+    ]
+  },
+  {
+    "id": "workbench-sftp-transfer",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "sftp_transfer",
+    "description": "Transfer a file using the OpenSSH SFTP subsystem.",
+    "hint": "Start sftp in direct mode with -D and use get in the interactive session.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "sftp"
+    ]
+  },
+  {
+    "id": "workbench-process-resume",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "process_resume",
+    "description": "Resume a suspended process.",
+    "hint": "Identify the original PID and send SIGCONT.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-recovery-shadow",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "recovery_shadow",
+    "description": "Recover the credential database of a disposable offline image.",
+    "hint": "Use the staged shadow database and compare the password hash and aging fields.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "openssl"
+    ]
+  },
+  {
+    "id": "workbench-acl-inherit",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "acl_inherit",
+    "description": "Provide effective ACL access and default inheritance.",
+    "hint": "Use setfacl access and default entries. Inspect effective permissions with getfacl.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "getfacl",
+      "setfacl"
+    ]
+  },
+  {
+    "id": "workbench-lvm-partition",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "lvm_partition",
+    "description": "Create a Linux LVM partition in a practice image.",
+    "hint": "Use GPT and select the Linux LVM partition type.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "sfdisk"
+    ]
+  },
+  {
+    "id": "workbench-lv-persistence",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "lv_persistence",
+    "description": "Make a logical volume persistently available at a mount point.",
+    "hint": "Use the logical-volume mapper path or the volume group and logical volume path in fstab.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-selinux-mode",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "selinux_mode",
+    "description": "Recover an enforcing SELinux boot configuration.",
+    "hint": "Review SELINUX and SELINUXTYPE in the offline configuration.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-nfs-export",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "nfs_export",
+    "description": "Restrict an NFS export to a single authorized client.",
+    "hint": "Review exports(5) and put the options directly after the client address.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-tuning-profile",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "tuning_profile",
+    "description": "Repair a TuneD profile based on balanced.",
+    "hint": "Use include=balanced and a sysctl section in tuned.conf.",
+    "tier": "daily",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "workbench-unit-disable",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "unit_disable",
+    "description": "Disable a service in a disposable system root.",
+    "hint": "Use systemctl --root=PATH disable UNIT and check is-enabled.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "systemctl"
+    ]
+  },
+  {
+    "id": "workbench-service-start",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "service_start",
+    "description": "Start a transient systemd user service.",
+    "hint": "Use systemd-run --user with --unit and --working-directory.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "systemctl",
+      "systemd-run"
+    ]
+  },
+  {
+    "id": "workbench-service-stop",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "service_stop",
+    "description": "Stop a running systemd user service.",
+    "hint": "Use systemctl --user stop on the named practice unit.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "systemctl",
+      "systemd-run"
+    ]
+  },
+  {
+    "id": "workbench-timer-run",
+    "group": "workbench",
+    "kind": "workbench",
+    "operation": "timer_run",
+    "description": "Schedule and verify a real systemd user job.",
+    "hint": "Use systemd-run --user --on-active and specify a transient unit name.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "systemctl",
+      "systemd-run"
+    ]
+  }
+]

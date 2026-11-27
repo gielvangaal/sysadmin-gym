@@ -226,5 +226,33 @@
     "description": "IPv4 subnetanalyse",
     "hint": "Vergelijk het subnet van host en gateway.",
     "tier": "daily"
+  },
+  {
+    "id": "network-network-addrs",
+    "group": "network",
+    "kind": "workbench",
+    "operation": "network_addrs",
+    "description": "Configure multiple IPv4 addresses in a private network namespace.",
+    "hint": "Use ip link and ip address against lo in the practice namespace.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "ip",
+      "unshare"
+    ]
+  },
+  {
+    "id": "network-network-routing",
+    "group": "network",
+    "kind": "workbench",
+    "operation": "network_routing",
+    "description": "Configure an IPv4 route in a private network namespace.",
+    "hint": "Use ip route with a destination prefix, interface and preferred source.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "requires": [
+      "ip",
+      "unshare"
+    ]
   }
 ]

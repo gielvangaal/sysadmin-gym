@@ -1,5 +1,5 @@
 {
-  "version": "3.2.2",
+  "version": "3.2.3",
   "tasks_per_round": 7,
   "modules": [
     {
@@ -46,6 +46,12 @@
     },
     {
       "name": "practical",
+      "enabled": true,
+      "count": 1,
+      "every": 1
+    },
+    {
+      "name": "workbench",
       "enabled": true,
       "count": 1,
       "every": 1
