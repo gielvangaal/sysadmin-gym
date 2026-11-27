@@ -24,7 +24,7 @@ def config(root):
     return cfg
 
 def read_history(root):
-    path=root/'history'/'events.jsonl'
+    path=root/'progress'/'events.jsonl'
     stats=defaultdict(lambda:{'pass':0,'fail':0,'skipped':0,'last':None})
     topics=defaultdict(lambda:{'pass':0,'fail':0,'skipped':0})
     rounds=0
@@ -51,7 +51,7 @@ def read_history(root):
                     stats[r['id']]['last']=r['ok']
     # Old progress.json contains completed v3 rounds; keep it as a baseline
     # only for tasks with no new events, avoiding double counting.
-    old=root/'progress.json'
+    old=root/'progress'/'legacy.json'
     if old.exists():
         legacy=json.loads(old.read_text())
         for tid,totals in legacy.items():
@@ -62,7 +62,7 @@ def read_history(root):
     return {'tasks':stats,'topics':topics,'rounds':rounds}
 
 def record(root,event):
-    directory=root/'history';directory.mkdir(exist_ok=True)
+    directory=root/'progress';directory.mkdir(exist_ok=True)
     event['timestamp']=time.strftime('%Y-%m-%dT%H:%M:%S%z')
     # Append and fsync: a check event is durable before user resets workspace.
     import os

@@ -7,7 +7,7 @@ from .catalog import TASKS
 from .adaptive import config, read_history, record, weight_for, summary
 from .english import prompt_for, hint_for
 ROOT=Path(__file__).resolve().parent.parent
-WORK=ROOT/'workspace'; BACKUPS=ROOT/'backups'; PROGRESS=ROOT/'progress.json'; SESSION=ROOT/'session.json'
+WORK=ROOT/'workspace'; BACKUPS=ROOT/'backups'; PROGRESS=ROOT/'progress'/'legacy.json'; SESSION=ROOT/'session.json'
 CATEGORIES={'permissions','files','shell','network','observe'}
 
 def run(*cmd):
@@ -260,7 +260,7 @@ def start(args):
             selected=selected[:max(0,args.count-4)]+system_tasks
     tasks=[prepare(t,i,port,args.interface) for i,t in enumerate(selected,1)]
     save_json(SESSION,{'tasks':tasks,'backup':str(backup),'started':time.time(),'port':port,'session_id':str(time.time_ns()),'check_number':0})
-    print(f'SYSADMIN GYM v3.2.0 — {len(tasks)} tasks | configuration inventory: {backup.name}\n')
+    print(f'SYSADMIN GYM v4 development — {len(tasks)} tasks | configuration inventory: {backup.name}\n')
     for i,t in enumerate(tasks,1):print(f'{i}. [{t["group"]}] {t["description"]}\n')
     print('Commands: ./gym.sh check | ./gym.sh hint NUMBER | ./gym.sh reset')
     if args.system:print('WARNING: reset does NOT revert system changes. Restore your VM snapshot if needed.')
