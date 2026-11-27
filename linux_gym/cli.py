@@ -53,7 +53,7 @@ def choose_tasks(count,system):
     cfg=config(ROOT)
     history=read_history(ROOT)
     round_no=history['rounds']+1
-    pool=[t for t in TASKS if t['group']!='system']
+    pool=[t for t in TASKS if t['group']!='system' and (t['group']!='tls' or shutil.which('openssl')) ]
     modules=cfg['modules']
     selected=[]
     # Explicit per-module quotas, with no duplicate exercise IDs.
@@ -62,7 +62,7 @@ def choose_tasks(count,system):
             continue
         available=[t for t in pool if t['group']==module['name']]
         for _ in range(min(module['count'],len(available))):
-            options=[t for t in available if t['id'] not in {x['id'] for x in selected}]
+            options=[t for t in available if t['id'] not in {x['id'] for x in selected} and (t['kind'] not in ('move','signal') or not any(x['kind']==t['kind'] for x in selected))]
             if not options:break
             selected.append(pick(options,history,cfg))
     if len(selected)>count:
@@ -88,6 +88,9 @@ def prepare(t,i,port,iface):
     t['iface']=iface
     t['variant']=t.get('variant','A')
     desc=t['description']
+    if kind=='config_recovery':
+        from .config_recovery import prepare as prepare_config
+        return prepare_config(t)
     if kind=='file_audit':
         from .file_audit import prepare as prepare_audit
         return prepare_audit(t)
@@ -266,6 +269,9 @@ def expected(t):
     kind=t['kind']; result=Path(t['result']); target=Path(t['target']); src=WORK/'source.txt'
     def content():return result.read_text().strip()
     def matches(value):return result.exists() and content()==str(value)
+    if kind=='config_recovery':
+        from .config_recovery import check as check_config
+        return check_config(t)
     if kind=='file_audit':
         from .file_audit import check as check_audit
         return check_audit(t)

@@ -41,7 +41,9 @@ def read_history(root):
             if ev['event']=='check':
                 for r in ev['results']:
                     identity=(ev['session'],r['id'])
-                    if identity in checked:continue
+                    if identity in checked:
+                        stats[r['id']]['last']=r['ok']
+                        continue
                     checked.add(identity)
                     key='pass' if r['ok'] else 'fail'
                     stats[r['id']][key]+=1

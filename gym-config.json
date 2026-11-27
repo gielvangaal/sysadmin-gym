@@ -5,7 +5,7 @@
     {
       "name": "network",
       "enabled": true,
-      "count": 2,
+      "count": 1,
       "every": 1
     },
     {
@@ -34,9 +34,15 @@
     },
     {
       "name": "tls",
-      "enabled": true,
+      "enabled": false,
       "count": 1,
       "every": 3
+    },
+    {
+      "name": "recovery",
+      "enabled": true,
+      "count": 1,
+      "every": 1
     }
   ],
   "adaptive": {
