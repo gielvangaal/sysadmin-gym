@@ -44,7 +44,7 @@ def prompt_for(t):
       'head':f'A colleague needs the earliest five entries in {access}, in their original order, copied to {result}.',
       'redirect':f'Create {result} containing only the word stdout, followed by a newline.',
       'append':f'The record {result} must contain two lines, first and second, in that order, without a third line.',
-      'pipeline':f'From {access}, identify the three IPv4 addresses with the most requests. Store only the addresses in {result}, most frequent first.',
+      'pipeline':f'From {access}, identify the three IPv4 addresses with the most requests. Store only the addresses in {result}, most frequent first; break ties by ascending textual IP address.',
       'cut':f'Export only the employee names (first field) from {inv} into {result}, maintaining row order.',
       'regex':f'Only log entries starting with ERROR or WARNING from {log} may appear in {result}, in source order.',
       'tail':f'Retain the most recent three log entries from {log} in {result}, preserving order.',
@@ -84,7 +84,22 @@ def prompt_for(t):
       'selinux_context':f'A web application serves files in {target}. Both the directory and its index.html must permanently carry the SELinux type httpd_sys_content_t, including after relabeling. Do not alter the global SELinux mode.',
       'fstab_tmpfs':f'The application needs a 16 MiB memory-backed filesystem mounted at {target}, active now and defined for subsequent boots. Preserve all existing fstab entries; do not modify physical disks.',
     }
-    if k.startswith(('cidr_','same_subnet','gateway_subnet','tls_')):return t['description']
+    if k.startswith(('cidr_','same_subnet','gateway_subnet','tls_')):
+        a=t.get('address'); p=t.get('prefix'); b=t.get('other')
+        prompts={
+            'cidr_network':f'Find the network address of {a}/{p}, without the prefix.',
+            'cidr_hosts':f'How many usable host addresses are in a conventional IPv4 /{p} subnet?',
+            'same_subnet':f'Are {a} and {b} in the same /{p} subnet? Answer YES or NO.',
+            'cidr_broadcast':f'Find the broadcast address of {a}/{p}.',
+            'cidr_mask':f'Find the dotted-decimal subnet mask for /{p}.',
+            'gateway_subnet':f'Can host {a}/{p} reach gateway {b} on its local subnet? Answer YES or NO.',
+            'tls_subject':'Find the certificate subject common name.',
+            'tls_issuer':'Find the certificate issuer common name.',
+            'tls_expiry':'Find the certificate expiration date in YYYY-MM-DD format.',
+            'tls_verify':'Is the supplied certificate a valid PEM X.509 certificate? Answer YES or NO.',
+        }
+        source=f' Certificate: {t["cert"]}.' if k.startswith('tls_') else ''
+        return prompts[k]+source+f' Record only the answer in {result}.'
     if k not in descriptions:raise ValueError(f'Unknown task: {k}')
     return descriptions[k]
 
@@ -99,7 +114,8 @@ HINTS={
 }
 def hint_for(t):
     k=t['kind']
-    if k.startswith(('cidr_','same_subnet','gateway_subnet','tls_')):return t['hint']
+    if k.startswith(('cidr_','same_subnet','gateway_subnet')):return 'Identify the network and host bits using the prefix length.'
+    if k.startswith('tls_'):return 'Review the openssl x509 manual.'
     if k in HINTS:return HINTS[k]
     group=t['group']
     return {'files':'Investigate file and directory operations in the coreutils and find manuals.', 'shell':'Review shell redirection, text filters, and pipelines.', 'network':'Inspect the ip, ss, getent, or curl command documentation.', 'observe':'Review systemctl, journalctl, ps, procfs, and filesystem reporting commands.'}.get(group,'Consult the appropriate Linux manual page.')
