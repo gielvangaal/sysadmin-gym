@@ -88,6 +88,9 @@ def prepare(t,i,port,iface):
     t['iface']=iface
     t['variant']=t.get('variant','A')
     desc=t['description']
+    if kind=='file_audit':
+        from .file_audit import prepare as prepare_audit
+        return prepare_audit(t)
     if kind in ('mode','symbolic'):
         if t.get('is_dir'):target.mkdir()
         else:target.write_text('practice\n')
@@ -263,6 +266,9 @@ def expected(t):
     kind=t['kind']; result=Path(t['result']); target=Path(t['target']); src=WORK/'source.txt'
     def content():return result.read_text().strip()
     def matches(value):return result.exists() and content()==str(value)
+    if kind=='file_audit':
+        from .file_audit import check as check_audit
+        return check_audit(t)
     if kind in ('mode','symbolic'):return (target.stat().st_mode&0o7777)==int(t['mode'],8)
     if kind=='umask':
         m=int(t['mask'],8); f=Path(t['file']); d=Path(t['directory']);return f.is_file() and d.is_dir() and (f.stat().st_mode&0o777)==(0o666&~m) and (d.stat().st_mode&0o777)==(0o777&~m)
