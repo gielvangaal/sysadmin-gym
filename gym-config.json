@@ -5,7 +5,7 @@
     {
       "name": "network",
       "enabled": true,
-      "count": 3,
+      "count": 2,
       "every": 1
     },
     {
@@ -17,7 +17,7 @@
     {
       "name": "files",
       "enabled": true,
-      "count": 1,
+      "count": 2,
       "every": 1
     },
     {
@@ -41,7 +41,7 @@
   ],
   "adaptive": {
     "enabled": true,
-    "base_weight": 1.0,
+    "base_weight": 1,
     "failure_bonus": 1.7,
     "topic_failure_bonus": 0.6,
     "recent_success_discount": 0.55,
