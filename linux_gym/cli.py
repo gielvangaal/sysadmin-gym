@@ -313,9 +313,9 @@ def expected(t):
     if kind in ('cidr_network','cidr_hosts','same_subnet','cidr_broadcast','cidr_mask','gateway_subnet'):
         net=ipaddress.IPv4Network(f"{t['address']}/{t['prefix']}",strict=False)
         answers={'cidr_network':str(net.network_address),'cidr_hosts':str(max(0,net.num_addresses-2)),
-          'same_subnet':'JA' if ipaddress.IPv4Address(t['other']) in net else 'NEE',
+          'same_subnet':'YES' if ipaddress.IPv4Address(t['other']) in net else 'NO',
           'cidr_broadcast':str(net.broadcast_address),'cidr_mask':str(net.netmask),
-          'gateway_subnet':'JA' if ipaddress.IPv4Address(t['other']) in net else 'NEE'}
+          'gateway_subnet':'YES' if ipaddress.IPv4Address(t['other']) in net else 'NO'}
         return result.exists() and content().upper()==answers[kind]
     if kind.startswith('tls_'):
         cert=t['cert']
@@ -323,7 +323,7 @@ def expected(t):
         if p.returncode:return False
         from datetime import datetime, timezone
         output=p.stdout.splitlines()
-        if kind=='tls_verify':answer='JA'
+        if kind=='tls_verify':answer='YES'
         elif kind=='tls_subject':answer='sysadmin-gym.local'
         elif kind=='tls_issuer':answer='sysadmin-gym.local'
         else:
