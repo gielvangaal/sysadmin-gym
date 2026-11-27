@@ -1,18 +1,79 @@
 """Offline configuration recovery with real Linux tools and isolated paths."""
 import configparser
-import ipaddress
-import json
-import shutil
-import subprocess
 from pathlib import Path
 
-def run(*args):
-    return subprocess.run(args,capture_output=True,text=True,timeout=10)
+# These fixtures represent configuration captured from a lab machine.
+RECOVERY_FILES = {
+    'journal': (
+        'journald.conf', '[Journal]\nStorage=volatile\nMaxRetentionSec=0\n',
+        'Configure persistent journal storage and cap retention at {number} days.',
+        {'Journal': {'Storage': 'persistent', 'MaxRetentionSec': '{number}day'}},
+    ),
+    'timer': (
+        'audit.timer', '[Timer]\nOnCalendar=weekly\nPersistent=false\n',
+        'Schedule audit.service daily at 03:{number:02d}:00 and catch up on missed runs.',
+        {'Timer': {'OnCalendar': '*-*-* 03:{number:02d}:00', 'Persistent': 'true',
+                   'Unit': 'audit.service'}},
+    ),
+    'nfs_mount': (
+        'fstab', 'archive.invalid:/reports /mnt/reports nfs ro,vers=3 0 0\n',
+        'Repair the read-only /mnt/reports entry for NFSv4 from archive.invalid:/reports. '
+        'Mark it as requiring network access. Set dump and pass to zero.',
+        'archive.invalid:/reports /mnt/reports nfs ro,vers=4,_netdev 0 0',
+    ),
+    'swap_fstab': (
+        'fstab', 'UUID=5cfd0e5f-9bae-4fce-9897-56f987ce2416 /mnt/scratch xfs defaults 0 0\n',
+        'Repair the entry for the existing UUID so it activates as swap at boot with defaults.',
+        'UUID=5cfd0e5f-9bae-4fce-9897-56f987ce2416 none swap defaults 0 0',
+    ),
+    'boot_mount': (
+        'fstab', 'LABEL=optional /mnt/archive xfs defaults 0 0\n',
+        'Keep the optional XFS archive mount enabled, but allow boot to finish if the disk is absent.',
+        'LABEL=optional /mnt/archive xfs defaults,nofail 0 0',
+    ),
+    'tmpfiles': (
+        'scratch.conf', 'd /var/tmp/gym-scratch 0777 root root -\n',
+        'Configure systemd-tmpfiles to create /var/tmp/gym-scratch owned by root:root, '
+        'with mode 0750 and cleanup after {number} days.',
+        'd /var/tmp/gym-scratch 0750 root root {number}d',
+    ),
+}
+
+
+def check_recovery_file(path, requirements, number):
+    if isinstance(requirements, dict):
+        parsed = configparser.ConfigParser(interpolation=None)
+        try:
+            parsed.read_string(path.read_text())
+        except configparser.Error:
+            return False
+        return all(
+            parsed.get(section, key, fallback=None) == value.format(number=number)
+            for section, settings in requirements.items()
+            for key, value in settings.items()
+        )
+
+    records = [
+        line.split('#', 1)[0].split()
+        for line in path.read_text().splitlines()
+    ]
+    records = [fields for fields in records if fields]
+    expected = requirements.format(number=number).split()
+    if path.name == 'fstab' and len(records) == 1 and len(records[0]) == 6:
+        records[0][3] = sorted(records[0][3].split(','))
+        expected[3] = sorted(expected[3].split(','))
+    return records == [expected]
+
 
 def prepare(t):
     root=Path(t['target']); root.mkdir()
     op=t['operation']; n=t['number']; result=t['result']
-    if op=='repo':
+    if op in RECOVERY_FILES:
+        filename, initial, goal, _ = RECOVERY_FILES[op]
+        path = root / filename
+        path.write_text(initial)
+        instruction = f'{goal.format(number=n)} Edit the offline fixture at {path}.'
+    elif op=='repo':
         repo=root/'repos'; repo.mkdir()
         (root/'mirror').mkdir()
         url=(root/'mirror').as_uri()
@@ -46,6 +107,9 @@ def prepare(t):
 
 def check(t):
     root=Path(t['target']); op=t['operation']
+    if op in RECOVERY_FILES:
+        filename, _, _, requirements = RECOVERY_FILES[op]
+        return check_recovery_file(root / filename, requirements, t['number'])
     if op=='repo':
         cp=configparser.ConfigParser(interpolation=None)
         cp.read(sorted((root/'repos').glob('*.repo')))

@@ -262,5 +262,71 @@
     "difficulty": "advanced",
     "operation": "fstab",
     "number": 4
+  },
+  {
+    "id": "recovery-journal",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair an offline configuration",
+    "hint": "Review Storage and MaxRetentionSec in journald.conf(5). Use a duration such as 2day.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "operation": "journal",
+    "number": 11
+  },
+  {
+    "id": "recovery-timer",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair an offline configuration",
+    "hint": "Review OnCalendar, Persistent and Unit in systemd.timer(5).",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "operation": "timer",
+    "number": 12
+  },
+  {
+    "id": "recovery-nfs-mount",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair an offline configuration",
+    "hint": "Review the fstab fields, the NFS version option and _netdev.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "operation": "nfs_mount",
+    "number": 13
+  },
+  {
+    "id": "recovery-swap-fstab",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair an offline configuration",
+    "hint": "A swap entry uses none as its mount point and swap as its type.",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "operation": "swap_fstab",
+    "number": 14
+  },
+  {
+    "id": "recovery-boot-mount",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair an offline configuration",
+    "hint": "Review the nofail option in systemd.mount(5).",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "operation": "boot_mount",
+    "number": 15
+  },
+  {
+    "id": "recovery-tmpfiles",
+    "group": "recovery",
+    "kind": "config_recovery",
+    "description": "Repair an offline configuration",
+    "hint": "Review the type, path, mode, ownership and age fields in tmpfiles.d(5).",
+    "tier": "daily",
+    "difficulty": "advanced",
+    "operation": "tmpfiles",
+    "number": 16
   }
 ]
