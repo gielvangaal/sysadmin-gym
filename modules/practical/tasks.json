@@ -113,122 +113,84 @@
     "requires": "rpm"
   },
   {
-    "id": "practical-cron",
-    "group": "practical",
-    "kind": "practical",
-    "description": "Practical task",
-    "hint": "Review crontab(5).",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "cron"
-  },
-  {
     "id": "practical-accounts",
     "group": "practical",
-    "kind": "practical",
-    "description": "Create a locked local account and its primary group.",
-    "hint": "Review groupadd and useradd, especially --prefix, --gid, --uid and --no-create-home.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "accounts",
-    "requires": "useradd"
+    "kind": "native",
+    "description": "Create local group gymdesk with GID 23144 and a password-locked local user gymclerk with UID 23144, primary group gymdesk and no home directory.",
+    "hint": "Consult useradd(8), groupadd(8) and passwd(1).",
+    "setup": "userdel gymclerk 2>/dev/null || true; groupdel gymdesk 2>/dev/null || true",
+    "checks": [
+      "test \"$(getent group gymdesk | cut -d: -f3)\" = 23144",
+      "test \"$(id -u gymclerk)\" = 23144 && test \"$(id -g gymclerk)\" = 23144",
+      "getent shadow gymclerk | cut -d: -f2 | grep -Eq '^[!*]'",
+      "test ! -d \"$(getent passwd gymclerk | cut -d: -f6)\""
+    ],
+    "requires": [
+      "useradd",
+      "groupadd"
+    ]
   },
   {
     "id": "practical-membership",
     "group": "practical",
-    "kind": "practical",
-    "description": "Repair supplementary group membership.",
-    "hint": "Review usermod --prefix --append --groups.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "membership",
-    "requires": "usermod"
+    "kind": "native",
+    "description": "The local user gymrunner requires supplementary membership in gymops without losing membership in gymstaff. Preserve its primary group.",
+    "hint": "Review usermod and id.",
+    "setup": "groupadd -f gymops; groupadd -f gymstaff; id gymrunner >/dev/null 2>&1 || useradd -M gymrunner; usermod -G gymstaff gymrunner",
+    "checks": [
+      "id -nG gymrunner | tr ' ' '\\n' | grep -qx gymops",
+      "id -nG gymrunner | tr ' ' '\\n' | grep -qx gymstaff",
+      "test \"$(id -gn gymrunner)\" = gymrunner"
+    ],
+    "requires": [
+      "usermod"
+    ]
   },
   {
     "id": "practical-expiry",
     "group": "practical",
-    "kind": "practical",
-    "description": "Enforce temporary account expiry and password inactivity.",
-    "hint": "Review usermod --prefix --expiredate and --inactive.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "expiry",
-    "requires": "usermod"
-  },
-  {
-    "id": "practical-swap-image",
-    "group": "practical",
-    "kind": "practical",
-    "description": "Prepare a fully allocated swap file.",
-    "hint": "Review dd or fallocate, chmod and mkswap -L. Inspect the file with blkid -p.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "swap_image",
-    "requires": "mkswap"
-  },
-  {
-    "id": "practical-gpt-image",
-    "group": "practical",
-    "kind": "practical",
-    "description": "Partition a disposable image with a GPT.",
-    "hint": "Review fdisk, parted or sfdisk. GPT has a Linux filesystem partition type.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "gpt_image",
-    "requires": "sfdisk"
-  },
-  {
-    "id": "practical-xfs-image",
-    "group": "practical",
-    "kind": "practical",
-    "description": "Format a disposable image as XFS.",
-    "hint": "Review mkfs.xfs -L and -m uuid=, then inspect the result with blkid -p.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "xfs_image",
-    "requires": "mkfs.xfs"
-  },
-  {
-    "id": "practical-boot-target",
-    "group": "practical",
-    "kind": "practical",
-    "description": "Repair the boot target in an offline system root.",
-    "hint": "Review systemctl --root=PATH set-default TARGET.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "boot_target",
-    "requires": "systemctl"
-  },
-  {
-    "id": "practical-service-enable",
-    "group": "practical",
-    "kind": "practical",
-    "description": "Enable a service in an offline system root.",
-    "hint": "Use systemctl --root=PATH enable and inspect the multi-user.target dependency.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "service_enable",
-    "requires": "systemctl"
-  },
-  {
-    "id": "practical-tmpfiles-apply",
-    "group": "practical",
-    "kind": "practical",
-    "description": "Repair and apply a tmpfiles rule in an offline root.",
-    "hint": "Review tmpfiles.d(5) and systemd-tmpfiles --root=PATH --create staging.conf.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "tmpfiles_apply",
-    "requires": "systemd-tmpfiles"
+    "kind": "native",
+    "description": "Set gymtemp to expire on {expiry} and become inactive 7 days after password expiration. Keep the password locked.",
+    "hint": "Consult chage(1).",
+    "setup": "id gymtemp >/dev/null 2>&1 || useradd -M gymtemp; passwd -l gymtemp; chage -E -1 -I -1 gymtemp",
+    "checks": [
+      "test \"$(getent shadow gymtemp | cut -d: -f7)\" = 7",
+      "test \"$(getent shadow gymtemp | cut -d: -f8)\" = {expiry_days}",
+      "getent shadow gymtemp | cut -d: -f2 | grep -Eq '^[!*]'"
+    ],
+    "requires": [
+      "chage"
+    ]
   },
   {
     "id": "practical-shared-directory",
     "group": "practical",
-    "kind": "practical",
-    "description": "Set shared-directory access and inheritance.",
-    "hint": "Use setgid for group inheritance and the sticky bit for deletion rules.",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "shared_directory"
+    "kind": "native",
+    "description": "Create /srv/gym-team owned by root:gymteam. Members must have full access, other users no access, new entries must inherit the group, and members must not delete each other's files.",
+    "hint": "Review special directory permission bits and ownership.",
+    "setup": "groupadd -f gymteam; mkdir -p /srv/gym-team; chown root:root /srv/gym-team; chmod 755 /srv/gym-team",
+    "checks": [
+      "test \"$(stat -c '%U:%G:%a' /srv/gym-team)\" = root:gymteam:3770"
+    ],
+    "requires": [
+      "groupadd"
+    ]
+  },
+  {
+    "id": "native-cron",
+    "group": "practical",
+    "kind": "native",
+    "description": "Schedule a recurring task for root that writes the current date to /var/log/gym-cron.log every minute. The schedule must survive reboot and the task must run successfully.",
+    "hint": "Review crontab(5) and crond.",
+    "setup": "rm -f /etc/cron.d/gym-cron /var/log/gym-cron.log; systemctl enable --now crond",
+    "checks": [
+      "systemctl is-active --quiet crond",
+      "systemctl is-enabled --quiet crond",
+      "test -s /var/log/gym-cron.log && find /var/log/gym-cron.log -mmin -3 | grep -q .",
+      "{ crontab -l -u root 2>/dev/null || true; cat /etc/cron.d/* 2>/dev/null || true; } | grep -E '^[*] [*] [*] [*] [*] .*gym-cron.log'"
+    ],
+    "requires": [
+      "crontab"
+    ]
   }
 ]

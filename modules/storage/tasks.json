@@ -1,48 +1,97 @@
 [
   {
+    "id": "storage-live-swap",
+    "group": "storage",
+    "kind": "native",
+    "description": "Create and activate a 64 MiB swap file at /swap-gym with permissions 0600. It must activate automatically at boot.",
+    "hint": "Review mkswap, swapon and fstab.",
+    "setup": "swapoff /swap-gym 2>/dev/null || true; rm -f /swap-gym; sed -i '\\|^/swap-gym[[:space:]]|d' /etc/fstab",
+    "checks": [
+      "test \"$(stat -c '%a:%s' /swap-gym)\" = 600:67108864",
+      "swapon --noheadings --raw --show=NAME | grep -qx /swap-gym",
+      "findmnt --fstab -rn -S /swap-gym -o FSTYPE | grep -qx swap"
+    ],
+    "requires": [
+      "mkswap",
+      "swapon"
+    ]
+  },
+  {
+    "id": "native-tmpfs",
+    "group": "storage",
+    "kind": "native",
+    "description": "Configure a 64 MiB memory-backed filesystem at /mnt/gym-ram. Mount it now and ensure it is mounted at every boot.",
+    "hint": "Review mount, findmnt and fstab.",
+    "setup": "umount /mnt/gym-ram 2>/dev/null || true; mkdir -p /mnt/gym-ram; sed -i '\\|[[:space:]]/mnt/gym-ram[[:space:]]|d' /etc/fstab",
+    "checks": [
+      "findmnt -rn -M /mnt/gym-ram -o FSTYPE | grep -qx tmpfs",
+      "test \"$(df -B1 --output=size /mnt/gym-ram | tail -1 | tr -d ' ')\" = 67108864",
+      "findmnt --fstab -rn -M /mnt/gym-ram -o FSTYPE,OPTIONS | grep -E '^tmpfs .*size=(64[mM]|65536[kK]|67108864)(,|$)'"
+    ],
+    "requires": [
+      "findmnt"
+    ]
+  },
+  {
     "id": "storage-live-xfs",
     "group": "storage",
-    "kind": "workbench",
-    "operation": "live_xfs",
-    "description": "Mount a loop-backed XFS filesystem.",
-    "hint": "Use losetup --find --show only with the exercise image. Check its backing file before using mkfs.xfs.",
-    "tier": "system",
-    "difficulty": "advanced",
+    "kind": "native",
+    "description": "On disk {disk}, create a GPT partition of approximately 768 MiB. Format it with XFS and mount it at /mnt/gym-data. The mount must persist across reboots.",
+    "hint": "Review lsblk, parted, mkfs.xfs, blkid and fstab.",
+    "setup": "mkdir -p /mnt/gym-data; umount /mnt/gym-data 2>/dev/null || true; sed -i '\\|[[:space:]]/mnt/gym-data[[:space:]]|d' /etc/fstab",
+    "checks": [
+      "test \"$(lsblk -dn -o PTTYPE {disk})\" = gpt",
+      "p=$(findmnt -rn -M /mnt/gym-data -o SOURCE); test \"$(lsblk -ndo PKNAME \"$p\")\" = \"$(basename {disk})\"; test \"$(lsblk -ndo TYPE \"$p\")\" = part; s=$(blockdev --getsize64 \"$p\"); test \"$s\" -ge 790000000 && test \"$s\" -le 820000000",
+      "findmnt -rn -M /mnt/gym-data -o FSTYPE | grep -qx xfs",
+      "findmnt --fstab --evaluate -rn -M /mnt/gym-data -o SOURCE | grep -Fx \"$(findmnt -rn -M /mnt/gym-data -o SOURCE)\""
+    ],
     "requires": [
-      "losetup",
+      "parted",
       "mkfs.xfs",
-      "mount"
-    ]
+      "lsblk"
+    ],
+    "disk": true,
+    "conflict": "disk"
   },
   {
     "id": "storage-live-lvm",
     "group": "storage",
-    "kind": "workbench",
-    "operation": "live_lvm",
-    "description": "Extend a volume group and logical volume on two loop-backed PVs.",
-    "hint": "Verify both loop devices by backing file. Use the exact lab VG name for vgcreate, vgextend, lvcreate and lvextend.",
-    "tier": "system",
-    "difficulty": "advanced",
+    "kind": "native",
+    "description": "Use disk {disk} to create a physical volume, volume group gymvg and logical volume data of 512 MiB. Format it with XFS and mount at /srv/gym-data persistently.",
+    "hint": "Review pvcreate, vgcreate, lvcreate, mkfs and fstab.",
+    "setup": "mkdir -p /srv/gym-data; umount /srv/gym-data 2>/dev/null || true; sed -i '\\|[[:space:]]/srv/gym-data[[:space:]]|d' /etc/fstab",
+    "checks": [
+      "test \"$(lvs --noheadings --units m --nosuffix -o lv_size gymvg/data | xargs | cut -d. -f1)\" = 512",
+      "pvs --noheadings -o pv_name,vg_name | awk '$2==\"gymvg\" {print $1}' | while read -r p; do test \"$p\" = {disk} || test \"$(lsblk -ndo PKNAME \"$p\")\" = \"$(basename {disk})\" || exit 1; done",
+      "test \"$(findmnt -rn -M /srv/gym-data -o FSTYPE)\" = xfs",
+      "test \"$(readlink -f \"$(findmnt -rn -M /srv/gym-data -o SOURCE)\")\" = \"$(readlink -f /dev/gymvg/data)\"",
+      "test \"$(readlink -f \"$(findmnt --fstab --evaluate -rn -M /srv/gym-data -o SOURCE)\")\" = \"$(readlink -f /dev/gymvg/data)\""
+    ],
     "requires": [
-      "losetup",
-      "lvm",
-      "mkfs.xfs",
-      "mount"
-    ]
+      "lvs",
+      "pvs",
+      "mkfs.xfs"
+    ],
+    "disk": true,
+    "conflict": "disk"
   },
   {
-    "id": "storage-live-swap",
+    "id": "native-ext4",
     "group": "storage",
-    "kind": "workbench",
-    "operation": "live_swap",
-    "description": "Activate a disposable swap file.",
-    "hint": "Use dd, chmod, mkswap and swapon only with the exercise file. Run swapoff on it before resetting.",
-    "tier": "system",
-    "difficulty": "advanced",
+    "kind": "native",
+    "description": "Create an approximately 512 MiB partition on {disk}, format it as ext4 and mount it persistently at /mnt/gym-ext4.",
+    "hint": "Review partitioning, mkfs.ext4 and fstab.",
+    "setup": "mkdir -p /mnt/gym-ext4; umount /mnt/gym-ext4 2>/dev/null || true; sed -i '\\|[[:space:]]/mnt/gym-ext4[[:space:]]|d' /etc/fstab",
+    "checks": [
+      "p=$(findmnt -rn -M /mnt/gym-ext4 -o SOURCE); test \"$(lsblk -ndo PKNAME \"$p\")\" = \"$(basename {disk})\"; s=$(blockdev --getsize64 \"$p\"); test \"$s\" -ge 520000000 && test \"$s\" -le 550000000",
+      "findmnt -rn -M /mnt/gym-ext4 -o FSTYPE | grep -qx ext4",
+      "findmnt --fstab --evaluate -rn -M /mnt/gym-ext4 -o SOURCE | grep -Fx \"$(findmnt -rn -M /mnt/gym-ext4 -o SOURCE)\""
+    ],
     "requires": [
-      "mkswap",
-      "swapon",
-      "swapoff"
-    ]
+      "parted",
+      "mkfs.ext4"
+    ],
+    "disk": true,
+    "conflict": "disk"
   }
 ]

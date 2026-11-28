@@ -20,132 +20,6 @@
     "difficulty": "advanced"
   },
   {
-    "id": "workbench-login-policy",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "login_policy",
-    "description": "Repair default password aging.",
-    "hint": "Review PASS_MAX_DAYS, PASS_MIN_DAYS and PASS_WARN_AGE in login.defs.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-account-rotate",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "account_rotate",
-    "description": "Initialize a disposable account password and require rotation.",
-    "hint": "Use openssl passwd -6 and review the password and last change fields in shadow(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "openssl"
-    ]
-  },
-  {
-    "id": "workbench-sudo-scope",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "sudo_scope",
-    "description": "Validate a narrowly scoped sudo delegation.",
-    "hint": "Use a group specification, root run-as and the full command including arguments.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "visudo"
-    ]
-  },
-  {
-    "id": "workbench-hosts",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "hosts",
-    "description": "Repair static hostname and hosts resolution.",
-    "hint": "Use a single static hostname and put the canonical name first in its hosts entry.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-timezone",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "timezone",
-    "description": "Correct the timezone file in an offline root.",
-    "hint": "Look under /usr/share/zoneinfo. A symlink or a copy of the requested zone file is valid.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-auth-log",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "auth_log",
-    "description": "Route authentication warnings and more severe syslog events.",
-    "hint": "Review the facility.priority selector in rsyslog.conf.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-selinux-context",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "selinux_context",
-    "description": "Diagnose an AVC and repair a persistent web-content context.",
-    "hint": "Use the normal HTTP content type and a regular expression that also matches descendants.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-selinux-ports",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "selinux_ports",
-    "description": "Diagnose an HTTP bind denial and repair its port assignment.",
-    "hint": "Use semanage port export format with the HTTP port type and tcp protocol.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-selinux-nfs",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "selinux_nfs",
-    "description": "Repair the policy boolean for NFS home directories.",
-    "hint": "Use persistent semanage boolean export syntax.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-firewall-source",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "firewall_source",
-    "description": "Limit a firewalld zone to the specified source and port.",
-    "hint": "Review source and port elements in firewalld.zone.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-lvm-layout",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "lvm_layout",
-    "description": "Repair an LVM and XFS layout in a Kickstart storage plan.",
-    "hint": "Review part, volgroup and logvol in the RHEL Kickstart reference.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-boot-uuid",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "boot_uuid",
-    "description": "Repair a boot-blocking filesystem identifier.",
-    "hint": "Compare the failed device in the boot log with the UUID in the blkid inventory.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
     "id": "workbench-loop-report",
     "group": "workbench",
     "kind": "workbench",
@@ -154,77 +28,6 @@
     "hint": "Read input line by line, skip blanks and redirect printf output to each report.",
     "tier": "daily",
     "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-rpm-install",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "rpm_install",
-    "description": "Install an original signed RPM into a local prefix.",
-    "hint": "Use rpm -i with --dbpath and --prefix. Use --define to set _tmppath.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "rpm",
-      "rpmkeys"
-    ]
-  },
-  {
-    "id": "workbench-rpm-upgrade",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "rpm_upgrade",
-    "description": "Upgrade a signed RPM in a local package database.",
-    "hint": "Use rpm -U with the same local database and prefix as the first install.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "rpm",
-      "rpmkeys"
-    ]
-  },
-  {
-    "id": "workbench-rpm-remove",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "rpm_remove",
-    "description": "Remove an RPM from a local package database.",
-    "hint": "Use rpm -e and the exercise --dbpath. Query the same database to check.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "rpm",
-      "rpmkeys"
-    ]
-  },
-  {
-    "id": "workbench-dnf-repo",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "dnf_repo",
-    "description": "Restore a package repository with signature verification.",
-    "hint": "Set baseurl and gpgkey to file URLs and enable gpgcheck and repo_gpgcheck.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "dnf"
-    ]
-  },
-  {
-    "id": "workbench-tmpfs-mount",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "tmpfs_mount",
-    "description": "Mount and verify a temporary filesystem in an isolated mount namespace.",
-    "hint": "Use mount -t tmpfs with size, nosuid and nodev options.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "unshare",
-      "mount",
-      "findmnt",
-      "df"
-    ]
   },
   {
     "id": "workbench-rsync-mirror",
@@ -240,19 +43,6 @@
     ]
   },
   {
-    "id": "workbench-sftp-transfer",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "sftp_transfer",
-    "description": "Transfer a file using the OpenSSH SFTP subsystem.",
-    "hint": "Start sftp in direct mode with -D and use get in the interactive session.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "sftp"
-    ]
-  },
-  {
     "id": "workbench-process-resume",
     "group": "workbench",
     "kind": "workbench",
@@ -261,19 +51,6 @@
     "hint": "Identify the original PID and send SIGCONT.",
     "tier": "daily",
     "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-recovery-shadow",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "recovery_shadow",
-    "description": "Recover the credential database of a disposable offline image.",
-    "hint": "Use the staged shadow database and compare the password hash and aging fields.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "openssl"
-    ]
   },
   {
     "id": "workbench-acl-inherit",
@@ -290,111 +67,216 @@
     ]
   },
   {
-    "id": "workbench-lvm-partition",
+    "id": "workbench-login-policy",
     "group": "workbench",
-    "kind": "workbench",
-    "operation": "lvm_partition",
-    "description": "Create a Linux LVM partition in a practice image.",
-    "hint": "Use GPT and select the Linux LVM partition type.",
-    "tier": "daily",
-    "difficulty": "advanced",
+    "kind": "native",
+    "description": "Configure the system-wide defaults for new local accounts: maximum password age {number} days, minimum age 2 days and warning period 5 days.",
+    "hint": "Review login.defs(5).",
+    "setup": "sed -i -E '/^[[:space:]]*PASS_(MAX_DAYS|MIN_DAYS|WARN_AGE)[[:space:]]/d' /etc/login.defs; printf '\\nPASS_MAX_DAYS 99999\\nPASS_MIN_DAYS 0\\nPASS_WARN_AGE 7\\n' >> /etc/login.defs",
+    "checks": [
+      "awk '$1==\"PASS_MAX_DAYS\" {v=$2} END {exit v!={number}}' /etc/login.defs",
+      "awk '$1==\"PASS_MIN_DAYS\" {v=$2} END {exit v!=2}' /etc/login.defs",
+      "awk '$1==\"PASS_WARN_AGE\" {v=$2} END {exit v!=5}' /etc/login.defs"
+    ],
+    "requires": []
+  },
+  {
+    "id": "workbench-account-rotate",
+    "group": "workbench",
+    "kind": "native",
+    "description": "Set the password for local user gymintern to {password} and require a password change at next login.",
+    "hint": "Review passwd and chage.",
+    "setup": "id gymintern >/dev/null 2>&1 || useradd -m gymintern; passwd -l gymintern; chage -d 20000 gymintern",
+    "checks": [
+      "test \"$(getent shadow gymintern | cut -d: -f3)\" = 0",
+      "python3 -c 'import subprocess,ctypes; h=subprocess.check_output([\"getent\",\"shadow\",\"gymintern\"],text=True).split(\":\")[1].encode(); lib=ctypes.CDLL(\"libcrypt.so.2\"); lib.crypt.restype=ctypes.c_char_p; assert lib.crypt(b\"{password}\",h)==h'"
+    ],
     "requires": [
-      "sfdisk"
+      "chage"
     ]
   },
   {
-    "id": "workbench-lv-persistence",
+    "id": "workbench-sudo-scope",
     "group": "workbench",
-    "kind": "workbench",
-    "operation": "lv_persistence",
-    "description": "Make a logical volume persistently available at a mount point.",
-    "hint": "Use the logical-volume mapper path or the volume group and logical volume path in fstab.",
-    "tier": "daily",
-    "difficulty": "advanced"
+    "kind": "native",
+    "description": "Allow members of gym-audit to run /usr/bin/systemctl is-active gym-reporter.service as root with authentication. Do not grant other administrative privileges to this group.",
+    "hint": "Review sudoers(5), visudo and sudo -l.",
+    "setup": "groupadd -f gym-audit; id gymauditor >/dev/null 2>&1 || useradd -M gymauditor; usermod -G gym-audit gymauditor; rm -f /etc/sudoers.d/gym-audit",
+    "checks": [
+      "visudo -c",
+      "sudo -l -U gymauditor | grep -F '/usr/bin/systemctl is-active gym-reporter.service' | grep -v NOPASSWD",
+      "! sudo -l -U gymauditor /usr/bin/id >/dev/null 2>&1"
+    ],
+    "requires": [
+      "sudo",
+      "visudo"
+    ]
+  },
+  {
+    "id": "workbench-hosts",
+    "group": "workbench",
+    "kind": "native",
+    "description": "Set the system's persistent hostname to gym-node-{number}.gym.test. Ensure reports.gym.test resolves locally to 192.0.2.80.",
+    "hint": "Review hostnamectl and hosts(5).",
+    "setup": "hostnamectl set-hostname gym-stale.gym.test; sed -i '/reports\\.gym\\.test/d' /etc/hosts; echo '192.0.2.250 reports.gym.test' >> /etc/hosts",
+    "checks": [
+      "test \"$(hostnamectl --static)\" = gym-node-{number}.gym.test",
+      "test \"$(getent ahostsv4 reports.gym.test | awk 'NR==1 {print $1}')\" = 192.0.2.80"
+    ],
+    "requires": [
+      "hostnamectl"
+    ]
+  },
+  {
+    "id": "workbench-timezone",
+    "group": "workbench",
+    "kind": "native",
+    "description": "Configure the system timezone to Europe/Amsterdam. The setting must persist.",
+    "hint": "Review timedatectl.",
+    "setup": "timedatectl set-timezone UTC",
+    "checks": [
+      "test \"$(timedatectl show -p Timezone --value)\" = Europe/Amsterdam"
+    ],
+    "requires": [
+      "timedatectl"
+    ]
+  },
+  {
+    "id": "workbench-auth-log",
+    "group": "workbench",
+    "kind": "native",
+    "description": "Configure the system to route authpriv messages at warning severity and higher to /var/log/gym-auth-warning.log. The logging service must be active and the configuration persistent.",
+    "hint": "Review rsyslog.conf(5), logger and journalctl.",
+    "setup": "mkdir -p /etc/rsyslog.d; echo 'authpriv.* /var/log/gym-auth-warning.log' > /etc/rsyslog.d/90-gym-auth.conf; systemctl enable --now rsyslog; systemctl restart rsyslog",
+    "checks": [
+      "rsyslogd -N1",
+      "systemctl is-active --quiet rsyslog",
+      "tag=gym-check-$(date +%s%N); logger -p authpriv.warning \"$tag-warning\"; logger -p authpriv.info \"$tag-info\"; sleep 2; grep -Fq \"$tag-warning\" /var/log/gym-auth-warning.log && ! grep -Fq \"$tag-info\" /var/log/gym-auth-warning.log"
+    ],
+    "requires": [
+      "rsyslogd",
+      "logger"
+    ]
+  },
+  {
+    "id": "workbench-selinux-context",
+    "group": "workbench",
+    "kind": "native",
+    "description": "The Apache web server is serving files from /srv/gym-content. Its index page is inaccessible. Restore access to http://127.0.0.1:80/ while keeping SELinux enforcing and making the file labels persistent.",
+    "hint": "Inspect service logs, AVCs and persistent file context mappings.",
+    "setup": "mkdir -p /srv/gym-content; echo gym-content-ok > /srv/gym-content/index.html; chmod 755 /srv/gym-content; chmod 644 /srv/gym-content/index.html; printf 'DocumentRoot /srv/gym-content\\n<Directory /srv/gym-content>\\nRequire all granted\\n</Directory>\\n' > /etc/httpd/conf.d/zz-gym-content.conf; setenforce 1; semanage fcontext -d '/srv/gym-content(/.*)?' 2>/dev/null || true; chcon -R -t var_t /srv/gym-content; systemctl enable --now httpd; systemctl restart httpd",
+    "checks": [
+      "test \"$(getenforce)\" = Enforcing",
+      "curl --fail --silent http://127.0.0.1/ | grep -qx gym-content-ok",
+      "matchpathcon -V /srv/gym-content /srv/gym-content/index.html",
+      "stat -c %C /srv/gym-content/index.html | grep -q ':httpd_sys_content_t:'"
+    ],
+    "requires": [
+      "httpd",
+      "semanage",
+      "curl"
+    ],
+    "conflict": "httpd"
+  },
+  {
+    "id": "workbench-selinux-ports",
+    "group": "workbench",
+    "kind": "native",
+    "description": "Apache must listen on TCP port 18181 and return a successful HTTP response. It currently fails to start on that port. Resolve the cause without disabling SELinux. The solution must persist.",
+    "hint": "Inspect journalctl, audit logs and SELinux port mappings.",
+    "setup": "setenforce 1; rm -f /etc/httpd/conf.d/zz-gym-port.conf; echo 'Listen 18181' > /etc/httpd/conf.d/zz-gym-port.conf; semanage port -d -t http_port_t -p tcp 18181 2>/dev/null || true; systemctl enable httpd; systemctl restart httpd || true",
+    "checks": [
+      "test \"$(getenforce)\" = Enforcing",
+      "systemctl is-active --quiet httpd",
+      "curl --fail --silent http://127.0.0.1:18181/ >/dev/null",
+      "semanage port -l | grep '^http_port_t ' | grep -w 18181"
+    ],
+    "requires": [
+      "httpd",
+      "semanage",
+      "curl"
+    ],
+    "conflict": "httpd"
+  },
+  {
+    "id": "workbench-selinux-nfs",
+    "group": "workbench",
+    "kind": "native",
+    "description": "Allow users to access home directories mounted over NFS under enforcing SELinux. Make the policy change persistent.",
+    "hint": "Review SELinux booleans.",
+    "setup": "setenforce 1; setsebool -P use_nfs_home_dirs off",
+    "checks": [
+      "test \"$(getenforce)\" = Enforcing",
+      "getsebool use_nfs_home_dirs | grep -q ' --> on$'",
+      "semanage boolean -l | grep '^use_nfs_home_dirs ' | grep -E '\\(on[[:space:]]*,[[:space:]]*on\\)'"
+    ],
+    "requires": [
+      "setsebool",
+      "semanage"
+    ],
+    "conflict": "selinux"
   },
   {
     "id": "workbench-selinux-mode",
     "group": "workbench",
-    "kind": "workbench",
-    "operation": "selinux_mode",
-    "description": "Recover an enforcing SELinux boot configuration.",
-    "hint": "Review SELINUX and SELINUXTYPE in the offline configuration.",
-    "tier": "daily",
-    "difficulty": "advanced"
+    "kind": "native",
+    "description": "Configure SELinux to run in enforcing mode immediately and on subsequent boots.",
+    "hint": "Review getenforce, setenforce and selinux(8).",
+    "setup": "setenforce 0; sed -i 's/^SELINUX=.*/SELINUX=permissive/' /etc/selinux/config",
+    "checks": [
+      "test \"$(getenforce)\" = Enforcing",
+      "grep -qx 'SELINUX=enforcing' /etc/selinux/config"
+    ],
+    "requires": [
+      "setenforce"
+    ],
+    "conflict": "selinux"
   },
   {
-    "id": "workbench-nfs-export",
+    "id": "workbench-firewall-source",
     "group": "workbench",
-    "kind": "workbench",
-    "operation": "nfs_export",
-    "description": "Restrict an NFS export to a single authorized client.",
-    "hint": "Review exports(5) and put the options directly after the client address.",
-    "tier": "daily",
-    "difficulty": "advanced"
+    "kind": "native",
+    "description": "Create a persistent firewall zone gym-reports for source network 198.51.100.0/24. Permit TCP port 18421 in that zone; remove the HTTP service exception. Apply the configuration now.",
+    "hint": "Review firewalld zones, sources and permanent settings.",
+    "setup": "systemctl enable --now firewalld; firewall-cmd --permanent --new-zone=gym-reports 2>/dev/null || true; firewall-cmd --permanent --zone=gym-reports --add-service=http; firewall-cmd --permanent --zone=gym-reports --remove-port=18421/tcp 2>/dev/null || true; firewall-cmd --reload",
+    "checks": [
+      "for opt in '' --permanent; do firewall-cmd $opt --zone=gym-reports --query-source=198.51.100.0/24 && firewall-cmd $opt --zone=gym-reports --query-port=18421/tcp && ! firewall-cmd $opt --zone=gym-reports --query-service=http || exit 1; done"
+    ],
+    "requires": [
+      "firewall-cmd"
+    ]
   },
   {
     "id": "workbench-tuning-profile",
     "group": "workbench",
-    "kind": "workbench",
-    "operation": "tuning_profile",
-    "description": "Repair a TuneD profile based on balanced.",
-    "hint": "Use include=balanced and a sysctl section in tuned.conf.",
-    "tier": "daily",
-    "difficulty": "advanced"
-  },
-  {
-    "id": "workbench-unit-disable",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "unit_disable",
-    "description": "Disable a service in a disposable system root.",
-    "hint": "Use systemctl --root=PATH disable UNIT and check is-enabled.",
-    "tier": "daily",
-    "difficulty": "advanced",
+    "kind": "native",
+    "description": "Configure the system to use the throughput-performance tuning profile. The profile must be active now and after reboot.",
+    "hint": "Review tuned-adm.",
+    "setup": "systemctl enable --now tuned; tuned-adm profile balanced",
+    "checks": [
+      "tuned-adm active | grep -w throughput-performance",
+      "systemctl is-enabled --quiet tuned",
+      "tuned-adm verify"
+    ],
     "requires": [
-      "systemctl"
+      "tuned-adm"
     ]
   },
   {
-    "id": "workbench-service-start",
+    "id": "native-chrony",
     "group": "workbench",
-    "kind": "workbench",
-    "operation": "service_start",
-    "description": "Start a transient systemd user service.",
-    "hint": "Use systemd-run --user with --unit and --working-directory.",
-    "tier": "daily",
-    "difficulty": "advanced",
+    "kind": "native",
+    "description": "Configure the system to synchronize time with time.cloudflare.com using chronyd. The service must run now and start at boot.",
+    "hint": "Review chrony.conf and chronyc.",
+    "setup": "sed -i '/^server time\\.cloudflare\\.com /d' /etc/chrony.conf; systemctl disable --now chronyd",
+    "checks": [
+      "systemctl is-active --quiet chronyd",
+      "systemctl is-enabled --quiet chronyd",
+      "grep -Eq '^server[[:space:]]+time\\.cloudflare\\.com([[:space:]]|$)' /etc/chrony.conf",
+      "chronyc sources -n >/dev/null"
+    ],
     "requires": [
-      "systemctl",
-      "systemd-run"
-    ]
-  },
-  {
-    "id": "workbench-service-stop",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "service_stop",
-    "description": "Stop a running systemd user service.",
-    "hint": "Use systemctl --user stop on the named practice unit.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "systemctl",
-      "systemd-run"
-    ]
-  },
-  {
-    "id": "workbench-timer-run",
-    "group": "workbench",
-    "kind": "workbench",
-    "operation": "timer_run",
-    "description": "Schedule and verify a real systemd user job.",
-    "hint": "Use systemd-run --user --on-active and specify a transient unit name.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "requires": [
-      "systemctl",
-      "systemd-run"
+      "chronyc"
     ]
   }
 ]

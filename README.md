@@ -1,77 +1,29 @@
-# Sysadmin Gym v4
+# Sysadmin Gym v5 — Native RHEL
 
-Independent, outcome-oriented RHCSA-style command-line practice for a personal RHEL 10 virtual machine. Task scenarios are original and organized around RH124/RH134 subject areas; they are **not** copied Red Hat exam exercises.
+Practice actual RHCSA-style administration on a disposable RHEL 10 VM. Gym prepares the real system, presents English outcome-based exercises, checks the system state and records progress. The VM is the lab. There are no alternate account databases, offline configuration exercises or private namespace tasks in the active catalog.
 
-## Requirements
+## Setup
 
-- RHEL 10 VM with Python 3, Bash and standard system utilities.
-- Install `shadow-utils`, `util-linux`, `xfsprogs`, `acl`, `openssh-clients`, `openssh-server`, `rsync`, `rpm`, `dnf`, `sudo` and OpenSSL for the broadest daily catalog. Gym selects exercises it can run with the available tools and Linux capabilities.
-- Optional `curl` for HTTP tasks and `semanage` (`policycoreutils-python-utils`) for SELinux labs.
-- No registration, cloud account, AI service, or network API is required to run the application itself.
-- An existing VM snapshot is strongly recommended before privileged system labs.
+Use a dedicated VM and take a hypervisor snapshot. Install Python 3, sudo and the RHEL packages relevant to your exercises (NetworkManager, firewalld, policycoreutils-python-utils, httpd, lvm2, xfsprogs, e2fsprogs, parted, nfs-utils, autofs, rsyslog, chrony, tuned, cronie, openssh-server, curl, flatpak). Tasks whose required tools are missing are skipped. Internet access is needed for the Flatpak task and external time synchronization.
 
-## Install
+Attach a virtual network adapter and an additional virtual disk for networking and partitioning exercises. Use real device names from ip link and lsblk. Gym does not protect the selected device from destructive operations.
 
-Transfer the distribution archive to your VM and extract it into a new directory.
+Run Gym as your regular user with sudo privileges:
 
 ```bash
-mkdir sysadmin-gym
-tar -xzf sysadmin-gym-v4.tar.gz -C sysadmin-gym
-cd sysadmin-gym
-./gym.sh list
-./gym.sh start
+./gym.sh start --interface enp7s0 --disk /dev/vdb
+./gym.sh hint 1
+./gym.sh check
+./gym.sh stats
+./gym.sh reset
 ```
 
-See [installation and progress restoration](README-INSTALL.md) and the [RHCSA lab coverage inventory](RHCSA-COVERAGE.md).
+With no interface or disk argument, ordinary rounds still include native administration, firewall, swap and tmpfs; physical interface and disk exercises are omitted. Supply both arguments for full practice. Seven tasks are selected by default using the existing adaptive history. More complex exercises may require more than 30 minutes or a reboot.
 
-## Daily session (approximately 30 minutes)
+## Recovery
 
-```bash
-./gym.sh start                # 7 tasks from several domains
-./gym.sh hint 3               # one hint for task 3
-./gym.sh check                # check the actual results
-./gym.sh stats                # historical results
-./gym.sh reset                # clean the practice workspace
-```
+Preparation and your work modify the actual VM. Reset removes the workspace and records the round, but does not restore system configuration. Save progress/events.jsonl and progress/legacy.json outside the snapshot, then restore the VM snapshot when desired. After reboot, use check on the existing session. Use the VM console if network or SSH access is broken.
 
-Prompts describe the expected outcomes. Progress uses the first check for each exercise in a round. Missed exercises appear more frequently, and the default round includes two networking exercises.
+## Distribution
 
-Daily account tasks use databases under the exercise directory. Storage tasks operate on regular image files, and offline systemd tasks use a local system root. Where supported, daily tasks can run in a private namespace or use disposable units in your existing systemd user manager. Gym cleans up these resources with `./gym.sh reset`. The bundled RPMs and DNF metadata are signed with a disposable lab key that is used inside the exercise.
-
-## Optional system tasks
-
-Use a dedicated RHEL VM with a snapshot and a secondary practice interface. Replace `enp7s0` below with its interface name.
-
-```bash
-./gym.sh start --system --interface enp7s0
-./gym.sh start --system --lab --interface enp7s0
-```
-
-System tasks include NetworkManager and firewalld. The extended lab adds persistent SELinux labeling and a tmpfs entry in `/etc/fstab`. These tasks change the actual VM configuration. Restore the VM snapshot after a system lab. Preserve `progress/` outside the VM to keep your history across snapshot restores.
-
-Run Gym as a regular user, not with `sudo`. Use `sudo` only where the task calls for administrative operations. Basic daily tasks write inside `workspace/`.
-
-## Optional storage round
-
-On the practice VM with `lvm2`, `xfsprogs` and `util-linux`, run
-`./gym.sh start --storage-lab` to include loop-backed XFS, LVM and swap.
-Run Gym as your regular user. Use administrative privileges only for the
-storage operations shown in the exercise. For each image, match the loop
-device to the exact backing file. Keep LVM scans scoped with `--devices`.
-For exercise VGs, use `--config 'backup { backup=0 archive=0 }'` to keep
-metadata backups out of the VM's LVM configuration directories.
-
-After grading, unmount the exercise mount points, deactivate the named
-exercise VG, detach its loop devices and disable the exercise swap file.
-Reset checks for active storage before removing the workspace.
-
-## Test
-
-```bash
-python3 tests/smoke.py
-python3 tests/practical.py
-python3 tests/workbench.py
-python3 tests/storage.py
-```
-
-The smoke test covers the basic CLI workflow. The integration suites verify isolated outcomes, signed package transactions, protocol transfers and storage reset guards. They report capability-dependent skips. Use the dedicated RHEL 10 VM for the privileged workflows.
+Run scripts/package.sh in a checkout of this branch to build dist/sysadmin-gym-v5.tar.gz. See README-INSTALL.md. Existing module layout and exercise history are retained; old simulation-only task definitions are removed from the active catalog. This release requires native VM testing.

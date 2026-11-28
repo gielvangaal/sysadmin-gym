@@ -1,23 +1,5 @@
 [
   {
-    "id": "network-01-A",
-    "group": "network",
-    "kind": "health_body",
-    "description": "{instruction}",
-    "hint": "curl -o bestand URL",
-    "tier": "daily",
-    "variant": "A"
-  },
-  {
-    "id": "network-01-B",
-    "group": "network",
-    "kind": "health_body",
-    "description": "{instruction}",
-    "hint": "curl -o bestand URL",
-    "tier": "daily",
-    "variant": "B"
-  },
-  {
     "id": "network-02-A",
     "group": "network",
     "kind": "http_code",
@@ -68,42 +50,6 @@
     "kind": "tcp",
     "description": "{instruction}",
     "hint": "nc -zv host poort",
-    "tier": "daily",
-    "variant": "B"
-  },
-  {
-    "id": "network-05-A",
-    "group": "network",
-    "kind": "status",
-    "description": "{instruction}",
-    "hint": "curl -w %{http_code}",
-    "tier": "daily",
-    "variant": "A"
-  },
-  {
-    "id": "network-05-B",
-    "group": "network",
-    "kind": "status",
-    "description": "{instruction}",
-    "hint": "curl -w %{http_code}",
-    "tier": "daily",
-    "variant": "B"
-  },
-  {
-    "id": "network-06-A",
-    "group": "network",
-    "kind": "resolve",
-    "description": "{instruction}",
-    "hint": "getent hosts localhost",
-    "tier": "daily",
-    "variant": "A"
-  },
-  {
-    "id": "network-06-B",
-    "group": "network",
-    "kind": "resolve",
-    "description": "{instruction}",
-    "hint": "getent hosts localhost",
     "tier": "daily",
     "variant": "B"
   },
@@ -230,29 +176,90 @@
   {
     "id": "network-network-addrs",
     "group": "network",
-    "kind": "workbench",
-    "operation": "network_addrs",
-    "description": "Configure multiple IPv4 addresses in a private network namespace.",
-    "hint": "Use ip link and ip address against lo in the practice namespace.",
-    "tier": "daily",
-    "difficulty": "advanced",
+    "kind": "native",
+    "description": "Configure the network interface {iface} with static IPv4 addresses 192.0.2.34/24 and 198.51.100.34/25. No default gateway is required. Activate the connection and ensure it is available after reboot.",
+    "hint": "Review NetworkManager connection profiles and IPv4 addressing.",
+    "setup": "{network_prepare}",
+    "checks": [
+      "ip -4 -o addr show dev {iface} | grep -w '192.0.2.34/24'",
+      "ip -4 -o addr show dev {iface} | grep -w '198.51.100.34/25'",
+      "p=$(nmcli -g GENERAL.CONNECTION device show {iface}); test \"$(nmcli -g connection.autoconnect con show \"$p\")\" = yes; test \"$(nmcli -g ipv4.method con show \"$p\")\" = manual; test -z \"$(nmcli -g ipv4.gateway con show \"$p\")\"; nmcli -g ipv4.addresses con show \"$p\" | grep -F 192.0.2.34/24 | grep -F 198.51.100.34/25"
+    ],
     "requires": [
-      "ip",
-      "unshare"
-    ]
+      "nmcli",
+      "ip"
+    ],
+    "interface": true,
+    "conflict": "nic"
   },
   {
     "id": "network-network-routing",
     "group": "network",
-    "kind": "workbench",
-    "operation": "network_routing",
-    "description": "Configure an IPv4 route in a private network namespace.",
-    "hint": "Use ip route with a destination prefix, interface and preferred source.",
-    "tier": "daily",
-    "difficulty": "advanced",
+    "kind": "native",
+    "description": "Configure {iface} with 192.0.2.40/24 and a persistent route to 198.51.100.0/24 via 192.0.2.1. Activate the connection. Do not add a default route on this connection.",
+    "hint": "Review nmcli IPv4 routes and ip route.",
+    "setup": "{network_prepare}",
+    "checks": [
+      "ip -4 -o addr show dev {iface} | grep -w 192.0.2.40/24",
+      "ip -4 route show 198.51.100.0/24 | grep -F 'via 192.0.2.1 dev {iface}'",
+      "p=$(nmcli -g GENERAL.CONNECTION device show {iface}); nmcli -g ipv4.routes con show \"$p\" | grep -F 198.51.100.0/24 | grep -F 192.0.2.1; test \"$(nmcli -g connection.autoconnect con show \"$p\")\" = yes; test -z \"$(nmcli -g ipv4.gateway con show \"$p\")\""
+    ],
     "requires": [
-      "ip",
-      "unshare"
-    ]
+      "nmcli",
+      "ip"
+    ],
+    "interface": true,
+    "conflict": "nic"
+  },
+  {
+    "id": "native-ipv6",
+    "group": "network",
+    "kind": "native",
+    "description": "Configure {iface} with the persistent static IPv6 address 2001:db8:40::20/64. Activate the connection and do not configure an IPv6 default gateway.",
+    "hint": "Review nmcli IPv6 settings and ip -6 address.",
+    "setup": "{network_prepare}",
+    "checks": [
+      "ip -6 -o addr show dev {iface} | grep -w '2001:db8:40::20/64'",
+      "p=$(nmcli -g GENERAL.CONNECTION device show {iface}); test \"$(nmcli -g ipv6.method con show \"$p\")\" = manual; nmcli -g ipv6.addresses con show \"$p\" | grep -F '2001:db8:40::20/64'; test \"$(nmcli -g connection.autoconnect con show \"$p\")\" = yes"
+    ],
+    "requires": [
+      "nmcli",
+      "ip"
+    ],
+    "interface": true,
+    "conflict": "nic"
+  },
+  {
+    "id": "native-dns",
+    "group": "network",
+    "kind": "native",
+    "description": "Configure the connection on {iface} to use DNS servers 192.0.2.53 and 198.51.100.53 and search domain gym.test. Persist the settings and activate the connection.",
+    "hint": "Review nmcli IPv4 DNS and DNS search properties.",
+    "setup": "{network_prepare}",
+    "checks": [
+      "p=$(nmcli -g GENERAL.CONNECTION device show {iface}); nmcli -g ipv4.dns con show \"$p\" | grep -F 192.0.2.53 | grep -F 198.51.100.53; nmcli -g ipv4.dns-search con show \"$p\" | grep -w gym.test; test \"$(nmcli -g ipv4.ignore-auto-dns con show \"$p\")\" = yes"
+    ],
+    "requires": [
+      "nmcli"
+    ],
+    "interface": true,
+    "conflict": "nic"
+  },
+  {
+    "id": "native-firewall",
+    "group": "network",
+    "kind": "native",
+    "description": "Allow incoming TCP connections on port 18420 in the default firewall zone now and after reboot. The firewall must remain active.",
+    "hint": "Review firewall-cmd runtime and permanent rules.",
+    "setup": "systemctl enable --now firewalld; firewall-cmd --permanent --remove-port=18420/tcp 2>/dev/null || true; firewall-cmd --reload",
+    "checks": [
+      "systemctl is-active --quiet firewalld",
+      "firewall-cmd --query-port=18420/tcp",
+      "firewall-cmd --permanent --query-port=18420/tcp"
+    ],
+    "requires": [
+      "firewall-cmd"
+    ],
+    "conflict": "firewall"
   }
 ]

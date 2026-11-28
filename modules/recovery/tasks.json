@@ -1,388 +1,151 @@
 [
   {
-    "id": "recovery-repo-1",
+    "id": "recovery-tmpfiles",
     "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review dnf.conf and repository definitions.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "repo",
-    "number": 1
-  },
-  {
-    "id": "recovery-repo-2",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review dnf.conf and repository definitions.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "repo",
-    "number": 2
-  },
-  {
-    "id": "recovery-repo-3",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review dnf.conf and repository definitions.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "repo",
-    "number": 3
-  },
-  {
-    "id": "recovery-repo-4",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review dnf.conf and repository definitions.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "repo",
-    "number": 4
-  },
-  {
-    "id": "recovery-dns-1",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review resolv.conf(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "dns",
-    "number": 1
-  },
-  {
-    "id": "recovery-dns-2",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review resolv.conf(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "dns",
-    "number": 2
-  },
-  {
-    "id": "recovery-dns-3",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review resolv.conf(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "dns",
-    "number": 3
-  },
-  {
-    "id": "recovery-dns-4",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review resolv.conf(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "dns",
-    "number": 4
-  },
-  {
-    "id": "recovery-network-1",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review nm-settings-keyfile(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "network",
-    "number": 1
-  },
-  {
-    "id": "recovery-network-2",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review nm-settings-keyfile(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "network",
-    "number": 2
-  },
-  {
-    "id": "recovery-network-3",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review nm-settings-keyfile(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "network",
-    "number": 3
-  },
-  {
-    "id": "recovery-network-4",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review nm-settings-keyfile(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "network",
-    "number": 4
-  },
-  {
-    "id": "recovery-firewall-1",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review firewalld.zone(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "firewall",
-    "number": 1
-  },
-  {
-    "id": "recovery-firewall-2",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review firewalld.zone(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "firewall",
-    "number": 2
-  },
-  {
-    "id": "recovery-firewall-3",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review firewalld.zone(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "firewall",
-    "number": 3
-  },
-  {
-    "id": "recovery-firewall-4",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review firewalld.zone(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "firewall",
-    "number": 4
-  },
-  {
-    "id": "recovery-service-1",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review systemd.service(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "service",
-    "number": 1
-  },
-  {
-    "id": "recovery-service-2",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review systemd.service(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "service",
-    "number": 2
-  },
-  {
-    "id": "recovery-service-3",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review systemd.service(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "service",
-    "number": 3
-  },
-  {
-    "id": "recovery-service-4",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review systemd.service(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "service",
-    "number": 4
-  },
-  {
-    "id": "recovery-fstab-1",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review fstab(5) and tmpfs mount options.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "fstab",
-    "number": 1
-  },
-  {
-    "id": "recovery-fstab-2",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review fstab(5) and tmpfs mount options.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "fstab",
-    "number": 2
-  },
-  {
-    "id": "recovery-fstab-3",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review fstab(5) and tmpfs mount options.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "fstab",
-    "number": 3
-  },
-  {
-    "id": "recovery-fstab-4",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Configuration recovery",
-    "hint": "Review fstab(5) and tmpfs mount options.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "fstab",
-    "number": 4
+    "kind": "native",
+    "description": "Ensure /var/tmp/gym-scratch is created automatically at boot, owned by root:root with mode 0750. Its contents must be eligible for cleanup after {number} days. Apply the rule now.",
+    "hint": "Review tmpfiles.d(5) and systemd-tmpfiles(8).",
+    "setup": "mkdir -p /var/tmp/gym-scratch; chmod 777 /var/tmp/gym-scratch; printf 'd /var/tmp/gym-scratch 0777 root root -\\n' > /etc/tmpfiles.d/gym-scratch.conf",
+    "checks": [
+      "test \"$(stat -c '%U:%G:%a' /var/tmp/gym-scratch)\" = root:root:750",
+      "systemd-tmpfiles --cat-config | awk '$1==\"d\" && $2==\"/var/tmp/gym-scratch\" && ($3==\"0750\" || $3==\"750\") && $4==\"root\" && $5==\"root\" && $6==\"{number}d\" {ok=1} END {exit !ok}'"
+    ],
+    "requires": [
+      "systemd-tmpfiles"
+    ]
   },
   {
     "id": "recovery-journal",
     "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair an offline configuration",
-    "hint": "Review Storage and MaxRetentionSec in journald.conf(5). Use a duration such as 2day.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "journal",
-    "number": 11
+    "kind": "native",
+    "description": "Ensure system journal entries survive reboots and journal storage is limited to 200 MiB. Apply the configuration to the running journal service.",
+    "hint": "Review journald.conf(5) and journalctl.",
+    "setup": "mkdir -p /etc/systemd/journald.conf.d; printf '[Journal]\\nStorage=volatile\\nSystemMaxUse=1G\\n' > /etc/systemd/journald.conf.d/90-gym.conf; systemctl restart systemd-journald",
+    "checks": [
+      "systemd-analyze cat-config systemd/journald.conf | awk -F= '/^[[:space:]]*Storage=/ {s=$2} /^[[:space:]]*SystemMaxUse=/ {m=$2} END {exit !(s==\"persistent\" && (m==\"200M\" || m==\"209715200\"))}'",
+      "test -d /var/log/journal && journalctl --directory=/var/log/journal --no-pager -n 1 | grep -v 'No entries' | grep -q ."
+    ],
+    "requires": [
+      "journalctl",
+      "systemd-analyze"
+    ]
+  },
+  {
+    "id": "recovery-service-1",
+    "group": "recovery",
+    "kind": "native",
+    "description": "The gym-reporter.service unit fails to start. Repair it so it starts successfully now and at every boot.",
+    "hint": "Inspect systemctl status, journalctl and the unit definition.",
+    "setup": "printf '[Unit]\\nDescription=Gym report service\\n[Service]\\nType=oneshot\\nRemainAfterExit=yes\\nExecStart=/usr/bin/gym-missing-command\\n[Install]\\nWantedBy=multi-user.target\\n' > /etc/systemd/system/gym-reporter.service; systemctl daemon-reload; systemctl disable --now gym-reporter.service 2>/dev/null || true; systemctl start gym-reporter.service || true",
+    "checks": [
+      "systemctl is-active --quiet gym-reporter.service",
+      "systemctl is-enabled --quiet gym-reporter.service"
+    ],
+    "requires": [
+      "systemctl"
+    ],
+    "conflict": "reporter"
   },
   {
     "id": "recovery-timer",
     "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair an offline configuration",
-    "hint": "Review OnCalendar, Persistent and Unit in systemd.timer(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "timer",
-    "number": 12
-  },
-  {
-    "id": "recovery-nfs-mount",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair an offline configuration",
-    "hint": "Review the fstab fields, the NFS version option and _netdev.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "nfs_mount",
-    "number": 13
-  },
-  {
-    "id": "recovery-swap-fstab",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair an offline configuration",
-    "hint": "A swap entry uses none as its mount point and swap as its type.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "swap_fstab",
-    "number": 14
-  },
-  {
-    "id": "recovery-boot-mount",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair an offline configuration",
-    "hint": "Review the nofail option in systemd.mount(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "boot_mount",
-    "number": 15
-  },
-  {
-    "id": "recovery-tmpfiles",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair an offline configuration",
-    "hint": "Review the type, path, mode, ownership and age fields in tmpfiles.d(5).",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "tmpfiles",
-    "number": 16
-  },
-  {
-    "id": "recovery-network-dual",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Add a second static IPv4 address to an offline profile.",
-    "hint": "Use separate address1 and address2 entries under [ipv4].",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "network_dual",
-    "number": 17
-  },
-  {
-    "id": "recovery-network-route",
-    "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair routing in an offline NetworkManager profile.",
-    "hint": "Use route1=DESTINATION,NEXT_HOP under [ipv4].",
-    "tier": "daily",
-    "difficulty": "intermediate",
-    "operation": "network_route",
-    "number": 18
+    "kind": "native",
+    "description": "The gym-schedule.timer is broken. Make it execute gym-schedule.service every minute and start automatically at boot. Verify that its service has run.",
+    "hint": "Review systemd.timer(5), systemctl and journalctl.",
+    "setup": "printf '[Service]\\nType=oneshot\\nExecStart=/usr/bin/touch /var/log/gym-schedule.done\\n' > /etc/systemd/system/gym-schedule.service; printf '[Timer]\\nOnCalendar=invalid\\n[Install]\\nWantedBy=timers.target\\n' > /etc/systemd/system/gym-schedule.timer; rm -f /var/log/gym-schedule.done; systemctl daemon-reload; systemctl disable --now gym-schedule.timer 2>/dev/null || true",
+    "checks": [
+      "systemctl is-active --quiet gym-schedule.timer",
+      "systemctl is-enabled --quiet gym-schedule.timer",
+      "test -f /var/log/gym-schedule.done",
+      "systemctl show -p TimersCalendar --value gym-schedule.timer | grep -F '*-*-* *:*:00'"
+    ],
+    "requires": [
+      "systemctl"
+    ]
   },
   {
     "id": "recovery-ssh-policy",
     "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair a disposable SSH server authentication policy.",
-    "hint": "Review PermitRootLogin, PasswordAuthentication and KbdInteractiveAuthentication. Check your policy with sshd -T -f.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "ssh_policy",
-    "number": 19,
-    "requires": "sshd"
+    "kind": "native",
+    "description": "Configure the running SSH server to disallow root login and password authentication while allowing public-key authentication. The settings must persist.",
+    "hint": "Review sshd_config(5), sshd -T and systemctl.",
+    "setup": "mkdir -p /etc/ssh/sshd_config.d; printf 'PermitRootLogin yes\\nPasswordAuthentication yes\\nPubkeyAuthentication no\\n' > /etc/ssh/sshd_config.d/00-gym.conf; systemctl enable --now sshd; systemctl reload sshd",
+    "checks": [
+      "sshd -t",
+      "sshd -T | grep -qx 'permitrootlogin no'",
+      "sshd -T | grep -qx 'passwordauthentication no'",
+      "sshd -T | grep -qx 'pubkeyauthentication yes'",
+      "systemctl is-active --quiet sshd"
+    ],
+    "requires": [
+      "sshd"
+    ]
+  },
+  {
+    "id": "practical-boot-target",
+    "group": "recovery",
+    "kind": "native",
+    "description": "Configure the default boot target to multi-user.target without changing the currently active target.",
+    "hint": "Review systemctl get-default and set-default.",
+    "setup": "systemctl set-default graphical.target",
+    "checks": [
+      "test \"$(systemctl get-default)\" = multi-user.target"
+    ],
+    "requires": [
+      "systemctl"
+    ]
+  },
+  {
+    "id": "recovery-nfs-mount",
+    "group": "recovery",
+    "kind": "native",
+    "description": "Mount the NFS export localhost:/srv/gym-export at /mnt/gym-nfs. Make the mount persistent and ensure its report.txt is readable.",
+    "hint": "Review mount, NFS and fstab.",
+    "setup": "mkdir -p /srv/gym-export /mnt/gym-nfs /etc/exports.d; echo gym-nfs-ok > /srv/gym-export/report.txt; echo '/srv/gym-export 127.0.0.1(ro,sync)' > /etc/exports.d/gym.exports; systemctl enable --now nfs-server; exportfs -ra; umount /mnt/gym-nfs 2>/dev/null || true; sed -i '\\|[[:space:]]/mnt/gym-nfs[[:space:]]|d' /etc/fstab",
+    "checks": [
+      "findmnt -rn -M /mnt/gym-nfs -o FSTYPE | grep -Eq '^nfs4?$'",
+      "grep -qx gym-nfs-ok /mnt/gym-nfs/report.txt",
+      "findmnt --fstab -rn -M /mnt/gym-nfs -o SOURCE,FSTYPE | grep -E '^localhost:/srv/gym-export nfs4?$'"
+    ],
+    "requires": [
+      "exportfs",
+      "mount.nfs"
+    ],
+    "conflict": "nfs"
   },
   {
     "id": "recovery-autofs-map",
     "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair an indirect automounter map.",
-    "hint": "Review auto.master(5) and autofs(5). The master entry sets the timeout; the indirect entry sets NFS options.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "autofs_map",
-    "number": 20
+    "kind": "native",
+    "description": "Configure /srv/gym-auto/reports to mount localhost:/srv/gym-auto-export on demand. The automounter must start at boot.",
+    "hint": "Review auto.master(5), autofs and NFS.",
+    "setup": "mkdir -p /srv/gym-auto-export /etc/exports.d /etc/auto.master.d; echo gym-auto-ok > /srv/gym-auto-export/report.txt; echo '/srv/gym-auto-export 127.0.0.1(ro,sync)' > /etc/exports.d/gym-auto.exports; systemctl enable --now nfs-server; exportfs -ra; rm -f /etc/auto.master.d/gym.autofs /etc/auto.gym; systemctl enable --now autofs; systemctl restart autofs",
+    "checks": [
+      "systemctl is-active --quiet autofs",
+      "systemctl is-enabled --quiet autofs",
+      "timeout 15 grep -qx gym-auto-ok /srv/gym-auto/reports/report.txt",
+      "findmnt -rn -M /srv/gym-auto/reports -o FSTYPE | grep -Eq '^nfs4?$'"
+    ],
+    "requires": [
+      "automount",
+      "exportfs"
+    ],
+    "conflict": "nfs"
   },
   {
-    "id": "recovery-journal-rotation",
+    "id": "workbench-nfs-export",
     "group": "recovery",
-    "kind": "config_recovery",
-    "description": "Repair journal space and rotation limits.",
-    "hint": "Use SystemMaxUse and SystemMaxFileSize in the Journal section.",
-    "tier": "daily",
-    "difficulty": "advanced",
-    "operation": "journal_rotation",
-    "number": 21
+    "kind": "native",
+    "description": "Export /srv/gym-share read-only via NFS to 192.0.2.25 only. Ensure the export is active and survives reboot.",
+    "hint": "Review exports(5) and exportfs.",
+    "setup": "mkdir -p /srv/gym-share /etc/exports.d; echo '/srv/gym-share *(rw,sync)' > /etc/exports.d/gym-share.exports; systemctl enable --now nfs-server; exportfs -ra",
+    "checks": [
+      "systemctl is-enabled --quiet nfs-server",
+      "exportfs -s | awk '$1==\"/srv/gym-share\" {n++; if ($2 ~ /^192\\.0\\.2\\.25\\(/ && $2 ~ /[,(]ro[,)]/) ok=1} END {exit !(n==1 && ok)}'"
+    ],
+    "requires": [
+      "exportfs"
+    ],
+    "conflict": "nfs"
   }
 ]

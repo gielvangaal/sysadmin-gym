@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Sysadmin Gym v4 CLI for RHEL practice."""
+"""Sysadmin Gym v5 CLI for native RHEL practice."""
 import argparse, json, os, random, shutil, socket, subprocess, sys, tarfile, tempfile, time, ipaddress, math
 from pathlib import Path
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from .catalog import TASKS
 from .adaptive import config, read_history, record, weight_for, summary
 from .english import prompt_for, hint_for
-from . import workbench
+from . import workbench, native
 ROOT=Path(__file__).resolve().parent.parent
 WORK=ROOT/'workspace'; BACKUPS=ROOT/'backups'; PROGRESS=ROOT/'progress'/'legacy.json'; SESSION=ROOT/'session.json'
 CATEGORIES={'permissions','files','shell','network','observe'}
@@ -67,32 +67,33 @@ def tools_available(task):
         return workbench.transfer_labs.sftp_server() is not None
     return True
 
-def choose_tasks(count,system):
+def choose_tasks(count,system,iface=None,disk=None):
     cfg=config(ROOT)
     history=read_history(ROOT)
     round_no=history['rounds']+1
-    pool=[t for t in TASKS if t['group'] not in ('system', 'storage') and tools_available(t) and t['kind'] not in ('cpu','journal','block') and (t['group']!='tls' or shutil.which('openssl')) ]
+    pool=[t for t in TASKS if tools_available(t) and t['kind'] not in ('cpu','journal','block') and (not t.get('interface') or iface) and (not t.get('disk') or disk)]
     modules=cfg['modules']
     selected=[]
-    # Explicit per-module quotas, with no duplicate exercise IDs.
+    def compatible(t):
+        return t['id'] not in {x['id'] for x in selected} and (not t.get('conflict') or t['conflict'] not in {x.get('conflict') for x in selected}) and (t['kind'] not in ('move','signal') or not any(x['kind']==t['kind'] for x in selected))
+    # Network and storage are part of every ordinary session, not optional labs.
     for module in modules:
         if not module.get('enabled',True) or round_no % module.get('every',1):
             continue
-        available=[t for t in pool if t['group']==module['name']]
-        for _ in range(min(module['count'],len(available))):
-            options=[t for t in available if t['id'] not in {x['id'] for x in selected} and (t['kind'] not in ('move','signal') or not any(x['kind']==t['kind'] for x in selected))]
-            if not options:break
-            selected.append(pick(options,history,cfg))
-    # Keep the networking quota and rotate the other modules when quotas
-    # collectively exceed the round size.
-    while len(selected) > count:
-        core = {'network', 'tls', 'practical', 'recovery', 'workbench'}
-        flexible = [i for i, task in enumerate(selected) if task['group'] not in core]
-        if not flexible:
-            flexible = [i for i, task in enumerate(selected) if task['group'] not in ('network', 'tls')]
-        selected.pop(random.choice(flexible) if flexible else -1)
+        groups=module.get('groups',[module['name']])
+        for _ in range(module['count']):
+            if len(selected)>=count:break
+            options=[t for t in pool if t['group'] in groups and compatible(t)]
+            # Prefer a real interface task once per round when a NIC is supplied.
+            if module['name']=='network' and iface and not any(x.get('interface') for x in selected):
+                options=[t for t in options if t.get('interface')] or options
+            # Prefer actual disk work when a disk is supplied.
+            if module['name']=='storage' and disk:
+                options=[t for t in options if t.get('disk')] or options
+            if options:selected.append(pick(options,history,cfg))
+    enabled={g for m in modules if m.get('enabled',True) for g in m.get('groups',[m['name']])}
     while len(selected)<count:
-        options=[t for t in pool if t['id'] not in {x['id'] for x in selected} and t['group'] in {m['name'] for m in modules if m.get('enabled',True)} and (t['kind'] not in ('move','signal') or not any(x['kind']==t['kind'] for x in selected))]
+        options=[t for t in pool if t['group'] in enabled and compatible(t)]
         if not options:break
         selected.append(pick(options,history,cfg))
     random.shuffle(selected)
@@ -102,7 +103,7 @@ def pick(opts,history,cfg):
     weights=[weight_for(t,history,cfg) for t in opts]
     return random.choices(opts,weights=weights,k=1)[0]
 
-def prepare(t,i,port,iface):
+def prepare(t,i,port,iface,disk=None):
     rng=random.Random(i*199+int(time.time_ns()))
     t=dict(t); kind=t['kind']; target=WORK/f'ex{i:02}'
     t['target']=str(target); t['result']=str(WORK/'results'/f'ex{i:02}.txt'); t['port']=port
@@ -112,6 +113,8 @@ def prepare(t,i,port,iface):
     if kind in ('copy','move','hardlink','symlink','compare'):
         t['source']=str(WORK/f'ex{i:02}-source.txt')
         Path(t['source']).write_text('Linux Gym practice\n')
+    if kind == 'native':
+        return native.prepare(t,iface,disk)
     if kind == 'workbench':
         return workbench.prepare(t)
     if kind=='practical':
@@ -256,23 +259,11 @@ def start(args):
     if SESSION.exists():raise SystemExit('A session is already active. Run check or reset first.')
     if WORK.exists():raise SystemExit('A workspace already exists. Run reset first; existing files will not be overwritten.')
     if os.geteuid()==0:raise SystemExit('Run Linux Gym as a regular user; use sudo only when completing tasks.')
-    if args.interface:
-        p=run('nmcli','-g','GENERAL.DEVICE','device','show',args.interface)
-        if p.returncode or args.interface=='lo':raise SystemExit('Invalid practice interface or nmcli is unavailable.')
-        # Refuse default-route NIC even when system tasks are selected.
-        default=run('ip','-4','route','show','default').stdout
-        if any(f'dev {args.interface}' in line.split(' metric ')[0] for line in default.splitlines()):raise SystemExit('REFUSED: this interface provides a default route. Use the secondary NIC.')
-    if args.storage_lab and (args.system or args.lab or args.interface):
-        raise SystemExit('Start the storage lab independently of the network system lab.')
-    storage_tasks = []
-    if args.storage_lab:
-        storage_tasks = [task for task in TASKS if task['group'] == 'storage']
-        if not all(tools_available(task) for task in storage_tasks):
-            raise SystemExit('Install lvm2, xfsprogs and util-linux for the storage lab.')
-    if args.system and not args.interface:raise SystemExit('--system requires --interface SECONDARY_NIC to protect SSH access.')
-    if args.lab and not args.system:raise SystemExit('--lab requires --system and --interface.')
-    if args.lab and not shutil.which('semanage'):raise SystemExit('SELinux lab requires semanage (policycoreutils-python-utils).' )
-    if args.system and (not shutil.which('firewall-cmd') or not shutil.which('nmcli')):raise SystemExit('System labs require NetworkManager and firewalld.')
+    if args.interface and not Path('/sys/class/net',args.interface).exists():
+        raise SystemExit('Unknown interface: '+args.interface)
+    if args.disk and not Path(args.disk).is_block_device():
+        raise SystemExit('Unknown block device: '+args.disk)
+    subprocess.run(['sudo','-v'],check=True)
     if shutil.which('python3') is None:raise SystemExit('python3 is missing.')
     backup=snapshot();seed_workspace()
     if any(t['group']=='tls' for t in TASKS):
@@ -287,17 +278,9 @@ def start(args):
     port=rand_port()
     server=subprocess.Popen([sys.executable,'-m','http.server',str(port),'--bind','127.0.0.1','--directory',str(WORK/'web')],stdout=(WORK/'http.log').open('w'),stderr=subprocess.STDOUT,start_new_session=True)
     (WORK/'http.pid').write_text(str(server.pid))
-    selected=choose_tasks(args.count,args.system)
-    if not shutil.which('openssl'):selected=[t for t in selected if t['group']!='tls']
-    if args.system:
-        system_tasks=[t for t in TASKS if t['group']=='system']
-        selected[-2:]=system_tasks[:2]
-        if args.lab:
-            selected=selected[:max(0,args.count-4)]+system_tasks
-    if storage_tasks:
-        selected[-len(storage_tasks):] = storage_tasks
+    selected=choose_tasks(args.count,args.system,args.interface,args.disk)
     try:
-        tasks=[prepare(t,i,port,args.interface) for i,t in enumerate(selected,1)]
+        tasks=[prepare(t,i,port,args.interface,args.disk) for i,t in enumerate(selected,1)]
         save_json(SESSION,{'tasks':tasks,'backup':str(backup),'started':time.time(),'port':port,'session_id':str(time.time_ns()),'check_number':0})
     except BaseException:
         server.terminate()
@@ -305,15 +288,17 @@ def start(args):
         workbench.stop_workers(WORK)
         workbench.user_services.cleanup(WORK)
         raise
-    print(f'SYSADMIN GYM v4 — {len(tasks)} tasks | configuration inventory: {backup.name}\n')
+    print(f'SYSADMIN GYM v5 — {len(tasks)} tasks | configuration inventory: {backup.name}\n')
     for i,t in enumerate(tasks,1):print(f'{i}. [{t["group"]}] {t["description"]}\n')
     print('Commands: ./gym.sh check | ./gym.sh hint NUMBER | ./gym.sh reset')
-    if args.system:print('WARNING: reset does NOT revert system changes. Restore your VM snapshot if needed.')
+    print('Native RHEL session: reset does not revert system changes. Restore your VM snapshot when needed.')
 
 def expected(t):
     kind=t['kind']; result=Path(t['result']); target=Path(t['target']); src=Path(t.get('source',WORK/'source.txt'))
     def content():return result.read_text().strip()
     def matches(value):return result.exists() and content()==str(value)
+    if kind == 'native':
+        return native.check(t)
     if kind == 'workbench':
         return workbench.check(t)
     if kind=='practical':
@@ -360,7 +345,7 @@ def expected(t):
         counts=Counter(s.split()[0] for s in acc)
         wanted=([f'{n} {ip}' for ip,n in sorted(counts.items())] if kind=='unique' else [ip for ip,n in sorted(counts.items(),key=lambda x:(-x[1],x[0]))[:3]])
         return result.exists() and [' '.join(x.split()) for x in result.read_text().splitlines()]==wanted
-    if kind=='count_error':return matches('4')
+    if kind=='count_error':return matches(sum('ERROR' in s for s in app))
     if kind=='head':return result.exists() and result.read_text().splitlines()==acc[:5]
     if kind=='redirect':return matches('stdout')
     if kind=='append':return result.exists() and result.read_text().splitlines()==['first','second']
@@ -449,6 +434,7 @@ def expected(t):
 def check(args):
     session=load_json(SESSION,None)
     if not session:raise SystemExit('No active session.')
+    if any(t['kind']=='native' for t in session['tasks']):subprocess.run(['sudo','-v'],check=True)
     results=[]
     passed=0
     for i,t in enumerate(session['tasks'],1):
@@ -476,8 +462,6 @@ def reset(args):
         resources = workbench.storage_labs.busy_resources(WORK)
         if resources:
             raise SystemExit('Release active practice storage before reset: ' + ', '.join(resources))
-    if session and any(t['group']=='system' for t in session['tasks']):
-        raise SystemExit('System labs make persistent changes. Restore the VM snapshot in virt-manager on the HOST; reset will not undo this lab.')
     if session:
         pid_file=WORK/'http.pid'
         if pid_file.exists():
@@ -511,7 +495,8 @@ def main():
     p=argparse.ArgumentParser(description='Sysadmin Gym — modular RHCSA practice')
     sub=p.add_subparsers(dest='command',required=True)
     s=sub.add_parser('start');s.add_argument('--count',type=int,default=None);s.add_argument('--lab',action='store_true',help='Include SELinux context and tmpfs/fstab tasks (VM snapshot required)');s.add_argument('--system',action='store_true',help='Include nmcli and firewall tasks; secondary NIC only');s.add_argument('--interface',help='Name of secondary virtual NIC')
-    s.add_argument('--storage-lab', action='store_true', help='Include opt-in loop-backed XFS, LVM and swap practice')
+    s.add_argument('--storage-lab', action='store_true', help=argparse.SUPPRESS)
+    s.add_argument('--disk',help='Real VM disk for partitioning and LVM exercises, e.g. /dev/vdb')
     sub.add_parser('check');u=sub.add_parser('install');u.add_argument('archive');rb=sub.add_parser('rollback');rb.add_argument('module');h=sub.add_parser('hint');h.add_argument('number',type=int);sub.add_parser('reset');sub.add_parser('stats');sub.add_parser('list')
     a=p.parse_args()
     if a.command=='start':

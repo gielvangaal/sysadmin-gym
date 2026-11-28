@@ -1,34 +1,84 @@
 [
   {
-    "id": "system-01-A",
+    "id": "native-rpm-repo",
     "group": "system",
-    "kind": "firewall_port",
-    "description": "{instruction}",
-    "hint": "Bekijk firewall-cmd --help / nmcli connection add en connection modify.",
-    "tier": "lab"
+    "kind": "native",
+    "description": "Repair the system repository gym-local so both versions of gym-workload are available and package and repository signatures are verified using the provided public key. Enable the repository.",
+    "hint": "Review dnf.conf(5), repository metadata and GPG verification.",
+    "setup": "mkdir -p /opt/gym-repo; cp -a {fixture}/. /opt/gym-repo/; printf '[gym-local]\\nname=Gym local\\nbaseurl=file:///opt/gym-missing\\nenabled=0\\ngpgcheck=0\\nrepo_gpgcheck=0\\ngpgkey=file:///opt/gym-repo/KEY.asc\\n' > /etc/yum.repos.d/gym-local.repo; dnf clean all",
+    "checks": [
+      "dnf -y --disablerepo='*' --enablerepo=gym-local --refresh --showduplicates list gym-workload | grep -F '1.0-1'",
+      "dnf -y --disablerepo='*' --enablerepo=gym-local --showduplicates list gym-workload | grep -F '2.0-1'",
+      "dnf repolist --enabled | grep -w gym-local",
+      "python3 -c 'import configparser; c=configparser.ConfigParser(); c.read(\"/etc/yum.repos.d/gym-local.repo\"); s=c[\"gym-local\"]; assert s.getboolean(\"gpgcheck\") and s.getboolean(\"repo_gpgcheck\") and s[\"gpgkey\"]==\"file:///opt/gym-repo/KEY.asc\"'"
+    ],
+    "requires": [
+      "dnf"
+    ],
+    "conflict": "rpm"
   },
   {
-    "id": "system-02-A",
+    "id": "native-rpm-install",
     "group": "system",
-    "kind": "nmcli_profile",
-    "description": "{instruction}",
-    "hint": "Bekijk firewall-cmd --help / nmcli connection add en connection modify.",
-    "tier": "lab"
+    "kind": "native",
+    "description": "Install version 1.0-1 of gym-workload from the signed RPM located in /opt/gym-repo. The package must be installed in the system RPM database.",
+    "hint": "Review rpm and dnf package installation.",
+    "setup": "mkdir -p /opt/gym-repo; cp -a {fixture}/. /opt/gym-repo/; rpm -e gym-workload 2>/dev/null || true; rpm --import /opt/gym-repo/KEY.asc",
+    "checks": [
+      "test \"$(rpm -q --qf '%{VERSION}-%{RELEASE}' gym-workload)\" = 1.0-1",
+      "rpm -V gym-workload"
+    ],
+    "requires": [
+      "rpm",
+      "dnf"
+    ],
+    "conflict": "rpm"
   },
   {
-    "id": "rhcsa-01",
+    "id": "native-rpm-upgrade",
     "group": "system",
-    "kind": "selinux_context",
-    "description": "{instruction}",
-    "hint": "Controleer getenforce, ls -Z, semanage fcontext en restorecon.",
-    "tier": "lab"
+    "kind": "native",
+    "description": "Upgrade the installed gym-workload package to version 2.0-1 using the signed package available under /opt/gym-repo.",
+    "hint": "Review rpm and dnf upgrade operations.",
+    "setup": "mkdir -p /opt/gym-repo; cp -a {fixture}/. /opt/gym-repo/; rpm -e gym-workload 2>/dev/null || true; rpm --import /opt/gym-repo/KEY.asc; rpm -i /opt/gym-repo/gym-workload-1.0-1.noarch.rpm",
+    "checks": [
+      "test \"$(rpm -q --qf '%{VERSION}-%{RELEASE}' gym-workload)\" = 2.0-1",
+      "rpm -V gym-workload"
+    ],
+    "requires": [
+      "rpm"
+    ],
+    "conflict": "rpm"
   },
   {
-    "id": "rhcsa-02",
+    "id": "native-flatpak",
     "group": "system",
-    "kind": "fstab_tmpfs",
-    "description": "{instruction}",
-    "hint": "Bekijk man fstab, mount -t tmpfs en findmnt; maak een backup van fstab.",
-    "tier": "lab"
+    "kind": "native",
+    "description": "Configure the system-wide Flatpak remote flathub using its official repository definition, and install the application org.gnome.Calculator for all users.",
+    "hint": "Review flatpak remote-add and install.",
+    "setup": "flatpak uninstall --system -y org.gnome.Calculator 2>/dev/null || true",
+    "checks": [
+      "flatpak remotes --system --columns=name | grep -qx flathub",
+      "flatpak info --system org.gnome.Calculator >/dev/null"
+    ],
+    "requires": [
+      "flatpak"
+    ],
+    "conflict": "flatpak"
+  },
+  {
+    "id": "native-bootloader",
+    "group": "system",
+    "kind": "native",
+    "description": "Configure the kernel argument audit=1 for all installed kernel boot entries. The running kernel must use it after a reboot.",
+    "hint": "Review grubby and kernel command-line options.",
+    "setup": "grubby --update-kernel=ALL --remove-args='audit=1' --args='audit=0'",
+    "checks": [
+      "grubby --info=ALL | awk '/^args=/ {n++; if ($0 !~ /[ \"=]audit=1([ \"]|$)/ || $0 ~ /[ \"=]audit=0([ \"]|$)/) bad=1} END {exit !(n && !bad)}'",
+      "grep -Eq '(^| )audit=1( |$)' /proc/cmdline"
+    ],
+    "requires": [
+      "grubby"
+    ]
   }
 ]

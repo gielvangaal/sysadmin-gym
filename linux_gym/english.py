@@ -116,7 +116,7 @@ def hint_for(t):
     k=t['kind']
     if k.startswith(('cidr_','same_subnet','gateway_subnet')):return 'Identify the network and host bits using the prefix length.'
     if k.startswith('tls_'):return 'Review the openssl x509 manual.'
-    if k in ('file_audit','config_recovery','practical','workbench'):return t['hint']
+    if k in ('file_audit','config_recovery','practical','workbench','native'):return t['hint']
     if k in HINTS:return HINTS[k]
     group=t['group']
     return {'files':'Investigate file and directory operations in the coreutils and find manuals.', 'shell':'Review shell redirection, text filters, and pipelines.', 'network':'Inspect the ip, ss, getent, or curl command documentation.', 'observe':'Review systemctl, journalctl, ps, procfs, and filesystem reporting commands.'}.get(group,'Consult the appropriate Linux manual page.')

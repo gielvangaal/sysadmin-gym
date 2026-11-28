@@ -9,34 +9,10 @@
       "every": 1
     },
     {
-      "name": "permissions",
+      "name": "storage",
       "enabled": true,
       "count": 1,
       "every": 1
-    },
-    {
-      "name": "files",
-      "enabled": true,
-      "count": 1,
-      "every": 1
-    },
-    {
-      "name": "shell",
-      "enabled": true,
-      "count": 1,
-      "every": 1
-    },
-    {
-      "name": "observe",
-      "enabled": true,
-      "count": 1,
-      "every": 1
-    },
-    {
-      "name": "tls",
-      "enabled": false,
-      "count": 1,
-      "every": 3
     },
     {
       "name": "recovery",
@@ -45,13 +21,32 @@
       "every": 1
     },
     {
-      "name": "practical",
+      "name": "administration",
+      "groups": [
+        "workbench",
+        "system"
+      ],
       "enabled": true,
       "count": 1,
       "every": 1
     },
     {
-      "name": "workbench",
+      "name": "accounts",
+      "groups": [
+        "practical",
+        "permissions"
+      ],
+      "enabled": true,
+      "count": 1,
+      "every": 1
+    },
+    {
+      "name": "essentials",
+      "groups": [
+        "shell",
+        "files",
+        "observe"
+      ],
       "enabled": true,
       "count": 1,
       "every": 1
