@@ -6,19 +6,19 @@ Practice actual RHCSA-style administration on a disposable RHEL 10 VM. Gym prepa
 
 Use a dedicated VM and take a hypervisor snapshot. Install Python 3, sudo and the RHEL packages relevant to your exercises (NetworkManager, firewalld, policycoreutils-python-utils, httpd, lvm2, xfsprogs, e2fsprogs, parted, nfs-utils, autofs, rsyslog, chrony, tuned, cronie, openssh-server, curl, flatpak). Tasks whose required tools are missing are skipped. Internet access is needed for the Flatpak task and external time synchronization.
 
-Attach a virtual network adapter and an additional virtual disk for networking and partitioning exercises. Use real device names from ip link and lsblk. Gym does not protect the selected device from destructive operations.
+Attach a virtual network adapter and an additional virtual disk for networking and partitioning exercises. Gym automatically selects a physical VM interface (preferring a secondary one) and an unmounted disk. It does not prevent destructive operations by the trainee.
 
 Run Gym as your regular user with sudo privileges:
 
 ```bash
-./gym.sh start --interface enp7s0 --disk /dev/vdb
+./gym.sh start
 ./gym.sh hint 1
 ./gym.sh check
 ./gym.sh stats
 ./gym.sh reset
 ```
 
-With no interface or disk argument, ordinary rounds still include native administration, firewall, swap and tmpfs; physical interface and disk exercises are omitted. Supply both arguments for full practice. Seven tasks are selected by default using the existing adaptive history. More complex exercises may require more than 30 minutes or a reboot.
+No device arguments are needed. If no suitable extra disk exists, Gym selects swap or tmpfs tasks instead. With only one physical NIC, networking tasks may change the primary connection; use the VM console. Seven tasks are selected by default using the existing adaptive history. More complex exercises may require more than 30 minutes or a reboot.
 
 ## Recovery
 

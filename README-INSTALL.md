@@ -6,9 +6,9 @@ Take a VM snapshot before starting. Use the console and give your normal user su
 
 ```bash
 ./gym.sh stats
-./gym.sh start --interface enp7s0 --disk /dev/vdb
+./gym.sh start
 ./gym.sh check
 ./gym.sh reset
 ```
 
-Replace the interface and disk with actual VM device names. Both arguments are optional but required for exercises involving those devices. Reset does not undo native system changes. Use snapshots to restore the machine; preserve progress outside the snapshot. No automatic system rollback is implemented.
+Gym discovers the interface and disk automatically. Attach an extra virtual disk if you want partitioning and LVM tasks; no arguments are required. Reset does not undo native system changes. Use snapshots to restore the machine; preserve progress outside the snapshot. No automatic system rollback is implemented.

@@ -255,14 +255,33 @@ def scenario(t, fallback):
       'De verbinding moet automatisch actief worden bij een nieuwe start. Stel op deze verbinding geen gateway of DNS-server in.')
     return fallback
 
+def detect_devices():
+    """Choose real VM devices automatically; prefer a spare NIC and unused disk."""
+    routes=run('ip','-4','route','show','default').stdout.split()
+    primary=routes[routes.index('dev')+1] if 'dev' in routes else None
+    interfaces=sorted(p.name for p in Path('/sys/class/net').iterdir()
+                      if (p/'device').exists())
+    iface=next((name for name in interfaces if name!=primary),None)
+    if iface is None and interfaces:
+        iface=interfaces[0]
+    # Do not mistake the disk holding the running OS for a separate exercise disk.
+    # This is device selection, not a restriction on what the trainee can modify.
+    p=run('lsblk','-J','-p','-o','NAME,TYPE,MOUNTPOINTS')
+    disk=None
+    if p.returncode==0:
+        def mounted(node):
+            return any(node.get('mountpoints') or []) or any(mounted(c) for c in node.get('children',[]))
+        candidates=[d for d in json.loads(p.stdout)['blockdevices']
+                    if d['type']=='disk' and not mounted(d)]
+        if candidates:
+            disk=sorted(d['name'] for d in candidates)[0]
+    return iface,disk
+
 def start(args):
     if SESSION.exists():raise SystemExit('A session is already active. Run check or reset first.')
     if WORK.exists():raise SystemExit('A workspace already exists. Run reset first; existing files will not be overwritten.')
     if os.geteuid()==0:raise SystemExit('Run Linux Gym as a regular user; use sudo only when completing tasks.')
-    if args.interface and not Path('/sys/class/net',args.interface).exists():
-        raise SystemExit('Unknown interface: '+args.interface)
-    if args.disk and not Path(args.disk).is_block_device():
-        raise SystemExit('Unknown block device: '+args.disk)
+    args.interface,args.disk=detect_devices()
     subprocess.run(['sudo','-v'],check=True)
     if shutil.which('python3') is None:raise SystemExit('python3 is missing.')
     backup=snapshot();seed_workspace()
@@ -278,7 +297,7 @@ def start(args):
     port=rand_port()
     server=subprocess.Popen([sys.executable,'-m','http.server',str(port),'--bind','127.0.0.1','--directory',str(WORK/'web')],stdout=(WORK/'http.log').open('w'),stderr=subprocess.STDOUT,start_new_session=True)
     (WORK/'http.pid').write_text(str(server.pid))
-    selected=choose_tasks(args.count,args.system,args.interface,args.disk)
+    selected=choose_tasks(args.count,False,args.interface,args.disk)
     try:
         tasks=[prepare(t,i,port,args.interface,args.disk) for i,t in enumerate(selected,1)]
         save_json(SESSION,{'tasks':tasks,'backup':str(backup),'started':time.time(),'port':port,'session_id':str(time.time_ns()),'check_number':0})
@@ -494,9 +513,7 @@ def reset(args):
 def main():
     p=argparse.ArgumentParser(description='Sysadmin Gym — modular RHCSA practice')
     sub=p.add_subparsers(dest='command',required=True)
-    s=sub.add_parser('start');s.add_argument('--count',type=int,default=None);s.add_argument('--lab',action='store_true',help='Include SELinux context and tmpfs/fstab tasks (VM snapshot required)');s.add_argument('--system',action='store_true',help='Include nmcli and firewall tasks; secondary NIC only');s.add_argument('--interface',help='Name of secondary virtual NIC')
-    s.add_argument('--storage-lab', action='store_true', help=argparse.SUPPRESS)
-    s.add_argument('--disk',help='Real VM disk for partitioning and LVM exercises, e.g. /dev/vdb')
+    s=sub.add_parser('start');s.add_argument('--count',type=int,default=None)
     sub.add_parser('check');u=sub.add_parser('install');u.add_argument('archive');rb=sub.add_parser('rollback');rb.add_argument('module');h=sub.add_parser('hint');h.add_argument('number',type=int);sub.add_parser('reset');sub.add_parser('stats');sub.add_parser('list')
     a=p.parse_args()
     if a.command=='start':
