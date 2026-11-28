@@ -220,7 +220,7 @@
     "setup": "{network_prepare}",
     "checks": [
       "ip -6 -o addr show dev {iface} | grep -w '2001:db8:40::20/64'",
-      "p=$(nmcli -g GENERAL.CONNECTION device show {iface}); test \"$(nmcli -g ipv6.method con show \"$p\")\" = manual; nmcli -g ipv6.addresses con show \"$p\" | grep -F '2001:db8:40::20/64'; test \"$(nmcli -g connection.autoconnect con show \"$p\")\" = yes"
+      "p=$(nmcli -g GENERAL.CONNECTION device show {iface}); test \"$(nmcli -g ipv6.method con show \"$p\")\" = manual; nmcli --escape no -g ipv6.addresses con show \"$p\" | grep -F '2001:db8:40::20/64'; test \"$(nmcli -g connection.autoconnect con show \"$p\")\" = yes"
     ],
     "requires": [
       "nmcli",
