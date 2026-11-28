@@ -261,5 +261,94 @@
       "firewall-cmd"
     ],
     "conflict": "firewall"
+  },
+  {
+    "id": "ipv6-expand",
+    "group": "network",
+    "kind": "ipv6_expand",
+    "description": "Expand an IPv6 address.",
+    "hint": "Each hextet has four hexadecimal digits; :: represents enough zero hextets to reach eight."
+  },
+  {
+    "id": "ipv6-compress",
+    "group": "network",
+    "kind": "ipv6_compress",
+    "description": "Compress an IPv6 address.",
+    "hint": "Remove leading zeros in each hextet and compress the longest consecutive run of zero hextets."
+  },
+  {
+    "id": "ipv6-type",
+    "group": "network",
+    "kind": "ipv6_type",
+    "description": "Identify the IPv6 address type.",
+    "hint": "Review loopback, link-local, unique-local, multicast and global unicast prefixes."
+  },
+  {
+    "id": "ipv6-prefix64",
+    "group": "network",
+    "kind": "ipv6_prefix64",
+    "description": "Determine an IPv6 /64 network prefix.",
+    "hint": "A /64 prefix contains the first four hextets."
+  },
+  {
+    "id": "ipv6-same",
+    "group": "network",
+    "kind": "ipv6_same",
+    "description": "Compare two IPv6 subnets.",
+    "hint": "Compare the network portions using the supplied prefix length."
+  },
+  {
+    "id": "ipv6-prefix_other",
+    "group": "network",
+    "kind": "ipv6_prefix_other",
+    "description": "Determine an IPv6 /48 or /56 network prefix.",
+    "hint": "A hextet contains 16 bits; each hexadecimal digit contains four bits."
+  },
+  {
+    "id": "ipv6-reachability",
+    "group": "network",
+    "kind": "ipv6_reachability",
+    "description": "Verify IPv6 loopback connectivity.",
+    "hint": "Review the IPv6 options of ping and the loopback address.",
+    "requires": [
+      "ping"
+    ]
+  },
+  {
+    "id": "native-ipv6-route",
+    "group": "network",
+    "kind": "native",
+    "description": "Configure {iface} with static IPv6 address 2001:db8:40::20/64 and a persistent route to 2001:db8:50::/64 via 2001:db8:40::1. Activate the connection and do not configure an IPv6 default gateway.",
+    "hint": "Review NetworkManager IPv6 route properties and the active IPv6 routing table.",
+    "setup": "{network_prepare}",
+    "checks": [
+      "ip -6 -o addr show dev {iface} | grep -w '2001:db8:40::20/64'",
+      "ip -6 route show 2001:db8:50::/64 | grep -F 'via 2001:db8:40::1 dev {iface}'",
+      "p=$(nmcli --escape no -g GENERAL.CONNECTION device show {iface}); test \"$(nmcli -g ipv6.method con show \"$p\")\" = manual; test \"$(nmcli -g connection.autoconnect con show \"$p\")\" = yes; test -z \"$(nmcli --escape no -g ipv6.gateway con show \"$p\")\"; nmcli --escape no -g ipv6.routes con show \"$p\" | grep -F '2001:db8:50::/64' | grep -F '2001:db8:40::1'"
+    ],
+    "requires": [
+      "nmcli",
+      "ip"
+    ],
+    "interface": true,
+    "conflict": "nic"
+  },
+  {
+    "id": "native-ipv6-repair",
+    "group": "network",
+    "kind": "native",
+    "description": "The application on {iface} must use IPv6 address 2001:db8:70::25/64. Its existing persistent IPv6 configuration has an incorrect address and prefix. Correct it, activate the connection, and retain automatic activation on boot. No IPv6 default gateway is needed.",
+    "hint": "Compare the active addresses with the persistent NetworkManager profile.",
+    "setup": "{network_prepare}; nmcli con mod gym-lab ipv6.method manual ipv6.addresses '2001:db8:71::25/48' ipv6.never-default yes; nmcli con up gym-lab",
+    "checks": [
+      "ip -6 -o addr show dev {iface} | grep -w '2001:db8:70::25/64'",
+      "p=$(nmcli --escape no -g GENERAL.CONNECTION device show {iface}); test \"$(nmcli -g ipv6.method con show \"$p\")\" = manual; test \"$(nmcli --escape no -g ipv6.addresses con show \"$p\")\" = '2001:db8:70::25/64'; test \"$(nmcli -g connection.autoconnect con show \"$p\")\" = yes; test -z \"$(nmcli --escape no -g ipv6.gateway con show \"$p\")\""
+    ],
+    "requires": [
+      "nmcli",
+      "ip"
+    ],
+    "interface": true,
+    "conflict": "nic"
   }
 ]

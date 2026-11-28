@@ -1,4 +1,4 @@
-# Sysadmin Gym v5 — Native RHEL
+# Sysadmin Gym v5.0.1 — Native RHEL
 
 Practice actual RHCSA-style administration on a disposable RHEL 10 VM. Gym prepares the real system, presents English outcome-based exercises, checks the system state and records progress. The VM is the lab. There are no alternate account databases, offline configuration exercises or private namespace tasks in the active catalog.
 
@@ -18,12 +18,12 @@ Run Gym as your regular user with sudo privileges:
 ./gym.sh reset
 ```
 
-No device arguments are needed. If no suitable extra disk exists, Gym selects swap or tmpfs tasks instead. With only one physical NIC, networking tasks may change the primary connection; use the VM console. Seven tasks are selected by default using the existing adaptive history. More complex exercises may require more than 30 minutes or a reboot.
+No device arguments are needed. If no suitable extra disk exists, Gym selects swap or tmpfs tasks instead. With only one physical NIC, networking tasks may change the primary connection; use the VM console. Seven tasks are selected by default using the existing adaptive history. Network rounds include address analysis (IPv4 or IPv6) alongside real interface exercises when available. More complex exercises may require more than 30 minutes or a reboot.
 
 ## Recovery
 
-Preparation and your work modify the actual VM. Reset removes the workspace and records the round, but does not restore system configuration. Save progress/events.jsonl and progress/legacy.json outside the snapshot, then restore the VM snapshot when desired. After reboot, use check on the existing session. Use the VM console if network or SSH access is broken.
+Preparation and your work modify the actual VM. Reset removes the workspace and records the round, but does not restore system configuration. History is optional and disposable: copy progress/ outside the snapshot only if you want to retain it. Restore the VM snapshot when desired. After reboot, use check on the existing session. Use the VM console if network or SSH access is broken.
 
 ## Distribution
 
-Run scripts/package.sh in a checkout of this branch to build dist/sysadmin-gym-v5.tar.gz. See README-INSTALL.md. Existing module layout and exercise history are retained; old simulation-only task definitions are removed from the active catalog. This release requires native VM testing.
+Run scripts/package.sh in a checkout of this branch to build dist/sysadmin-gym-v5-0-1.tar.gz. See README-INSTALL.md. Existing module layout and exercise history are retained; old simulation-only task definitions are removed from the active catalog. This release requires native VM testing.

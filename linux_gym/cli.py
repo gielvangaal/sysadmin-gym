@@ -87,6 +87,9 @@ def choose_tasks(count,system,iface=None,disk=None):
             # Prefer a real interface task once per round when a NIC is supplied.
             if module['name']=='network' and iface and not any(x.get('interface') for x in selected):
                 options=[t for t in options if t.get('interface')] or options
+            elif module['name']=='network':
+                analysis=[t for t in options if t['kind'].startswith(('ipv6_','cidr_')) or t['kind'] in ('same_subnet','gateway_subnet')]
+                if analysis:options=analysis
             # Prefer actual disk work when a disk is supplied.
             if module['name']=='storage' and disk:
                 options=[t for t in options if t.get('disk')] or options
@@ -113,6 +116,9 @@ def prepare(t,i,port,iface,disk=None):
     if kind in ('copy','move','hardlink','symlink','compare'):
         t['source']=str(WORK/f'ex{i:02}-source.txt')
         Path(t['source']).write_text('Linux Gym practice\n')
+    if kind.startswith('ipv6_'):
+        from . import ipv6
+        return ipv6.prepare(t,rng)
     if kind == 'native':
         return native.prepare(t,iface,disk)
     if kind == 'workbench':
@@ -307,7 +313,7 @@ def start(args):
         workbench.stop_workers(WORK)
         workbench.user_services.cleanup(WORK)
         raise
-    print(f'SYSADMIN GYM v5 — {len(tasks)} tasks | configuration inventory: {backup.name}\n')
+    print(f'SYSADMIN GYM v5.0.1 — {len(tasks)} tasks | configuration inventory: {backup.name}\n')
     for i,t in enumerate(tasks,1):print(f'{i}. [{t["group"]}] {t["description"]}\n')
     print('Commands: ./gym.sh check | ./gym.sh hint NUMBER | ./gym.sh reset')
     print('Native RHEL session: reset does not revert system changes. Restore your VM snapshot when needed.')
@@ -316,6 +322,9 @@ def expected(t):
     kind=t['kind']; result=Path(t['result']); target=Path(t['target']); src=Path(t.get('source',WORK/'source.txt'))
     def content():return result.read_text().strip()
     def matches(value):return result.exists() and content()==str(value)
+    if kind.startswith('ipv6_'):
+        from . import ipv6
+        return ipv6.check(t)
     if kind == 'native':
         return native.check(t)
     if kind == 'workbench':
@@ -473,7 +482,8 @@ def hint(args):
     session=load_json(SESSION,None)
     if not session:raise SystemExit('No active session.')
     if not (1<=args.number<=len(session['tasks'])):raise SystemExit('Invalid task number.')
-    print(f'HINT {args.number}: {hint_for(session["tasks"][args.number-1])}')
+    task=session['tasks'][args.number-1]
+    print(f'HINT {args.number}: {task["hint"] if task["kind"].startswith("ipv6_") else hint_for(task)}')
 
 def reset(args):
     session=load_json(SESSION,None)
